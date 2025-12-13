@@ -1,0 +1,13 @@
+/vendor
+/node_modules
+.env
+.env.local
+.DS_Store
+Thumbs.db
+/storage/logs/*.log
+/storage/cache/*
+/public/uploads/*
+!/public/uploads/.gitkeep
+/phinx.yml
+.idea
+.vscode
