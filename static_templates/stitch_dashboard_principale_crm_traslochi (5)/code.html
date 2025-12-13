@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html class="light" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traslòchi.it OpManager Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#2b8cee",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="sticky top-0 z-10 flex w-full items-center justify-center border-b border-gray-200/80 bg-background-light/80 dark:border-gray-700/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-gray-900 dark:text-white">
+<span class="material-symbols-outlined text-primary text-3xl"> local_shipping </span>
+<h2 class="text-lg font-bold tracking-tight">Traslòchi.it OpManager</h2>
+</div>
+</div>
+<div class="flex flex-1 justify-center px-8">
+<label class="flex flex-col w-full max-w-md">
+<div class="relative flex w-full flex-1 items-stretch">
+<div class="text-gray-500 dark:text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl"> search </span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-0 focus:ring-2 focus:ring-primary/50 border-transparent h-10 placeholder:text-gray-500 dark:placeholder:text-gray-400 pl-10 pr-4 text-sm font-normal leading-normal" placeholder="Cerca clienti, preventivi..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-shrink-0 items-center justify-end gap-4">
+<button class="flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+<span class="material-symbols-outlined text-xl"> notifications </span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image with a colorful abstract pattern" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAIUOKA9QkUZV9L1VlEre47reXoMh3At-97vuuACRuNSIrmwnhdVymXwhaf2oSXvI-1EUmqy3auKa7qODfrcYEU5nxrCGNC3AU93rkkd6Npw-mTR-e5PYDj-kDipfLBL47LHpx90VaKbDxXuqXz22o95ZSC1ks_riPVc_-iDeA9dcDZV1Th5jCHeSyUcWFs-mOpC6nfTvpmwtqDDsDolC2oSCRDdRyyo5xnM7DhZDichokToPGfw23FU_kNWrpcGPkrP5clHKTBRW98");'></div>
+</div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+<div class="flex min-w-72 flex-col gap-1">
+<p class="text-gray-900 dark:text-white text-3xl font-bold leading-tight tracking-tight">Dashboard</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Bentornato, ecco una panoramica della tua attività.</p>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white gap-2 text-sm font-bold leading-normal tracking-wide shadow-sm hover:opacity-90">
+<span class="material-symbols-outlined text-lg"> add </span>
+<span class="truncate">Aggiungi Richiesta</span>
+</button>
+</div>
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+<div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+<div class="flex items-center justify-between">
+<h3 class="text-gray-900 dark:text-white text-lg font-bold">Nuove Richieste</h3>
+<a class="text-primary text-sm font-semibold hover:underline" href="#">Vedi tutte</a>
+</div>
+<div class="flex flex-col divide-y divide-gray-100 dark:divide-gray-700/50">
+<div class="flex items-center gap-4 py-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar for Mario Rossi" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBECf5oBAeEdD9JrFZ3gHA5txovqLs8OHyWO3EDu0x44x9GW3VGxt2ekXLK2XP2q5OsxYfccv1UgBEwOmONFbZ-jlveLIbaIBToDRtvJoKd_S1tqNd0x1Tj5GP_KY9Fy6N8l8W1zGRplEyND3cF0akLn8K_6mCIPyg2O046U5ofBWICXbyG420PoA_CKXvnX0SNpAa8n_mBCNwuwTZBtEsLI18lst0HdVirbh8-hWGJJGgk9zowRiten9sSyIM-Q-3CMHmG1EJPiEzG");'></div>
+<div class="flex-1">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium line-clamp-1">Mario Rossi</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs line-clamp-1">Roma -&gt; Milano</p>
+</div>
+<button class="text-gray-600 dark:text-gray-300 hover:text-primary text-sm font-medium">Visualizza</button>
+</div>
+<div class="flex items-center gap-4 py-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar for Laura Bianchi" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiMfybGgEdY-EnVFBNOPl6mMtqZwk0lILi7TVMnrr4Ox8J48SHOOw8SCtuo276FPOqFDG5MHfg0IJZ3r7BqA2DNLHx-VvM8n_9uS619inL_L8rMk_eJdapswxSNea9IeyQBWvtrG6um2w0a0gmQzdEfe1xyWdaDJU3u586GtdwASifN0YjhByN-f0sDtIkXS-0GayBLkS8s8pHOLXOJVdU6yQnIBWlhXkmJmFmLd9ejvhsW6vosY3D1CsnkIhSQOXDaHpyPwyKIvlT");'></div>
+<div class="flex-1">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium line-clamp-1">Laura Bianchi</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs line-clamp-1">Napoli -&gt; Torino</p>
+</div>
+<button class="text-gray-600 dark:text-gray-300 hover:text-primary text-sm font-medium">Visualizza</button>
+</div>
+<div class="flex items-center gap-4 py-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar for Giulio Cesare" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBlkqgdInTA7zKjDXflIfQ45SrcOhiJV8v8nJxCSA9WhO_YoUPPBK7v0AkcERAu-Xupmxb_WHGqBDD1X-E--QcRSK-bCzOFzn_GG3PmbqSzdhQlB19FATu2iUT_v6NcOWmOkpVjBq6TnnRJ4GMQpNgdz2jFk06twrzJwxiArF6XQW3MKHjnrr9N-oYgA8ldcMEy1Ri-iUsZIsqhvY3JHp1-ID0gDGxJrAH9X49AUbhXPa1R11R9pW6GvWnD7DJ5tQLm9IMxf42C7dpt");'></div>
+<div class="flex-1">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium line-clamp-1">Giulio Cesare</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs line-clamp-1">Firenze -&gt; Bologna</p>
+</div>
+<button class="text-gray-600 dark:text-gray-300 hover:text-primary text-sm font-medium">Visualizza</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+<div class="flex items-center justify-between">
+<h3 class="text-gray-900 dark:text-white text-lg font-bold">Calendario del Giorno</h3>
+<span class="text-gray-500 dark:text-gray-400 text-sm font-medium">Oggi</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-start gap-4">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-semibold w-16">09:00</p>
+<div class="flex-1 border-l-2 border-green-500 pl-4">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium">Sopralluogo</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs">A. Verdi, Via Roma 1</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-semibold w-16">11:30</p>
+<div class="flex-1 border-l-2 border-yellow-500 pl-4">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium">Trasloco</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs">F. Neri, Via Milano 50</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-semibold w-16">15:00</p>
+<div class="flex-1 border-l-2 border-green-500 pl-4">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium">Sopralluogo</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs">S. Gialli, P.zza Garibaldi 12</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+<div class="flex items-center justify-between">
+<h3 class="text-gray-900 dark:text-white text-lg font-bold">Preventivi da Inviare</h3>
+<a class="text-primary text-sm font-semibold hover:underline" href="#">Vedi tutti</a>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-700/40 p-3">
+<div>
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium">Paolo Verdi</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs">Richiesta del 24/05</p>
+</div>
+<button class="flex items-center justify-center rounded-md h-8 px-3 bg-primary/20 text-primary dark:bg-primary/30 dark:text-white text-xs font-bold hover:bg-primary/30 dark:hover:bg-primary/40">Prepara</button>
+</div>
+<div class="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-700/40 p-3">
+<div>
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium">Sara Neri</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs">Richiesta del 23/05</p>
+</div>
+<button class="flex items-center justify-center rounded-md h-8 px-3 bg-primary/20 text-primary dark:bg-primary/30 dark:text-white text-xs font-bold hover:bg-primary/30 dark:hover:bg-primary/40">Prepara</button>
+</div>
+</div>
+</div>
+<div class="lg:col-span-3 flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+<h3 class="text-gray-900 dark:text-white text-lg font-bold">Attività Recenti</h3>
+<div class="flex flex-col">
+<div class="flex items-center gap-4 border-b border-gray-100 dark:border-gray-700/50 py-4">
+<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined text-xl"> mail </span>
+</div>
+<p class="text-gray-600 dark:text-gray-300 text-sm">Preventivo #123 inviato a <span class="font-semibold text-gray-800 dark:text-gray-100">Mario Rossi</span></p>
+<p class="ml-auto text-gray-400 dark:text-gray-500 text-xs">2 min fa</p>
+</div>
+<div class="flex items-center gap-4 border-b border-gray-100 dark:border-gray-700/50 py-4">
+<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400">
+<span class="material-symbols-outlined text-xl"> event_available </span>
+</div>
+<p class="text-gray-600 dark:text-gray-300 text-sm">Appuntamento confermato per il <span class="font-semibold text-gray-800 dark:text-gray-100">28/05</span></p>
+<p class="ml-auto text-gray-400 dark:text-gray-500 text-xs">1 ora fa</p>
+</div>
+<div class="flex items-center gap-4 py-4">
+<div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined text-xl"> person_add </span>
+</div>
+<p class="text-gray-600 dark:text-gray-300 text-sm">Nuova richiesta da <span class="font-semibold text-gray-800 dark:text-gray-100">Laura Bianchi</span></p>
+<p class="ml-auto text-gray-400 dark:text-gray-500 text-xs">3 ore fa</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

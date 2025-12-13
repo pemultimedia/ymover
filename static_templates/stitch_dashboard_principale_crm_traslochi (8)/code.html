@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="light" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Calendario Operativo - Traslòchi.it OpManager</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#2b8cee",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111418] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark px-6 py-3 sticky top-0 z-20">
+<div class="flex items-center gap-4 text-[#111418] dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Traslòchi.it OpManager</h2>
+</div>
+<div class="flex flex-1 justify-end gap-6">
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#111418] dark:text-gray-300 text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-[#111418] dark:text-gray-300 text-sm font-medium leading-normal" href="#">Clienti</a>
+<a class="text-primary dark:text-primary text-sm font-bold leading-normal border-b-2 border-primary pb-1" href="#">Calendario</a>
+<a class="text-[#111418] dark:text-gray-300 text-sm font-medium leading-normal" href="#">Report</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Nuovo Trasloco</span>
+</button>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 text-[#111418] dark:text-gray-300 gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar utente" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAqPq3yoC8cgnKIX1KsWfJOk1qHVwgL9GUdaNr_rADMn4qQ_5RGcC1tG3FGIwFJloXvqs_u1cB9qZ_Q4VrYs9gyn48KvK3A3XA-3_ZjxDPNCoA2Y3Y1b3VHNzE9fA1LmGJK-E9qorcmJ4hxCYUhrAUrfjaB5JjLXEDyJqwYLy4A4SLVa3lUR2qNROSKo3Z0_NyFsW6zIz3g2LVfoe71kcuExmwPQbX2S2zFI7J6u7yZLPiIWoOWS8atyiWlBUXlK3BGvOoOtOAnGD6Q");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 p-4 md:p-6 lg:p-8">
+<div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+<p class="text-[#111418] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Calendario Operativo</p>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2">
+<span class="material-symbols-outlined text-xl">add</span>
+<span class="truncate">Aggiungi Evento</span>
+</button>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 p-3 border-y border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark/50 mb-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 text-[#111418] dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 text-[#111418] dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<p class="text-lg font-semibold text-gray-700 dark:text-gray-200">15 - 21 Luglio 2024</p>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-white dark:bg-gray-700/50 text-[#111418] dark:text-gray-200 border border-gray-300 dark:border-gray-600 gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-4 hover:bg-gray-50 dark:hover:bg-gray-800">
+<span class="truncate">Oggi</span>
+</button>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-3 flex-wrap">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-[#0D6EFD]"></div>
+<p class="text-sm text-gray-600 dark:text-gray-400">Sopralluogo</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-[#FD7E14]"></div>
+<p class="text-sm text-gray-600 dark:text-gray-400">Trasloco</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-[#198754]"></div>
+<p class="text-sm text-gray-600 dark:text-gray-400">Appuntamento</p>
+</div>
+</div>
+<div class="flex h-10 w-64 items-center justify-center rounded-lg bg-background-light dark:bg-background-dark p-1 border border-gray-200 dark:border-gray-700">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-gray-700 has-[:checked]:shadow-sm has-[:checked]:text-[#111418] dark:has-[:checked]:text-white text-[#617589] dark:text-gray-400 text-sm font-medium leading-normal">
+<span class="truncate">Giorno</span>
+<input class="invisible w-0" name="calendar-view" type="radio" value="Giorno"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-gray-700 has-[:checked]:shadow-sm has-[:checked]:text-[#111418] dark:has-[:checked]:text-white text-[#617589] dark:text-gray-400 text-sm font-medium leading-normal">
+<span class="truncate">Settimana</span>
+<input checked="" class="invisible w-0" name="calendar-view" type="radio" value="Settimana"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 has-[:checked]:bg-white dark:has-[:checked]:bg-gray-700 has-[:checked]:shadow-sm has-[:checked]:text-[#111418] dark:has-[:checked]:text-white text-[#617589] dark:text-gray-400 text-sm font-medium leading-normal">
+<span class="truncate">Mese</span>
+<input class="invisible w-0" name="calendar-view" type="radio" value="Mese"/>
+</label>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark/50 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+<div class="grid grid-cols-8">
+<div class="col-span-1 border-r border-gray-200 dark:border-gray-700 text-center py-3">
+</div>
+<div class="col-span-7 grid grid-cols-7 text-center border-b border-gray-200 dark:border-gray-700">
+<div class="py-3 border-r border-gray-200 dark:border-gray-700"><p class="text-sm text-gray-500 dark:text-gray-400">LUN</p><p class="text-2xl font-bold text-[#111418] dark:text-white">15</p></div>
+<div class="py-3 border-r border-gray-200 dark:border-gray-700"><p class="text-sm text-gray-500 dark:text-gray-400">MAR</p><p class="text-2xl font-bold text-[#111418] dark:text-white">16</p></div>
+<div class="py-3 border-r border-gray-200 dark:border-gray-700 bg-primary/10 dark:bg-primary/20"><p class="text-sm text-primary font-semibold">MER</p><p class="text-2xl font-bold text-primary">17</p></div>
+<div class="py-3 border-r border-gray-200 dark:border-gray-700"><p class="text-sm text-gray-500 dark:text-gray-400">GIO</p><p class="text-2xl font-bold text-[#111418] dark:text-white">18</p></div>
+<div class="py-3 border-r border-gray-200 dark:border-gray-700"><p class="text-sm text-gray-500 dark:text-gray-400">VEN</p><p class="text-2xl font-bold text-[#111418] dark:text-white">19</p></div>
+<div class="py-3 border-r border-gray-200 dark:border-gray-700"><p class="text-sm text-gray-500 dark:text-gray-400">SAB</p><p class="text-2xl font-bold text-[#111418] dark:text-white">20</p></div>
+<div class="py-3"><p class="text-sm text-gray-500 dark:text-gray-400">DOM</p><p class="text-2xl font-bold text-[#111418] dark:text-white">21</p></div>
+</div>
+</div>
+<div class="grid grid-cols-8 h-[70vh] overflow-y-auto">
+<div class="col-span-1 border-r border-gray-200 dark:border-gray-700">
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">08:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">09:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">10:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">11:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">12:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">13:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">14:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1 border-b border-gray-200 dark:border-gray-700"><span class="text-xs text-gray-500 dark:text-gray-400">15:00</span></div>
+<div class="h-24 flex items-start justify-end pr-2 pt-1"><span class="text-xs text-gray-500 dark:text-gray-400">16:00</span></div>
+</div>
+<div class="col-span-7 grid grid-cols-7 relative">
+<div class="absolute inset-0 grid grid-cols-7 pointer-events-none">
+<div class="border-r border-gray-200 dark:border-gray-700"></div>
+<div class="border-r border-gray-200 dark:border-gray-700"></div>
+<div class="border-r border-gray-200 dark:border-gray-700"></div>
+<div class="border-r border-gray-200 dark:border-gray-700"></div>
+<div class="border-r border-gray-200 dark:border-gray-700"></div>
+<div class="border-r border-gray-200 dark:border-gray-700"></div>
+<div></div>
+</div>
+<div class="absolute inset-0 grid grid-rows-9 pointer-events-none">
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div class="border-b border-gray-200 dark:border-gray-700"></div>
+<div></div>
+</div>
+<div class="absolute inset-0 grid grid-cols-7">
+<div class="relative col-start-1 p-1">
+<div class="absolute w-[calc(50%-0.5rem)] top-24 h-48 left-1">
+<div class="bg-[#0D6EFD] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#0D6EFD] overflow-hidden">
+<p class="font-bold text-sm">Sopralluogo</p>
+<p class="text-xs">Mario Rossi</p>
+<p class="text-xs opacity-80">Via Roma 1, Milano</p>
+</div>
+</div>
+<div class="absolute w-[calc(50%-0.5rem)] top-24 h-72 left-1/2">
+<div class="bg-[#FD7E14] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#FD7E14] overflow-hidden">
+<p class="font-bold text-sm">Trasloco</p>
+<p class="text-xs">Luigi Neri</p>
+<p class="text-xs opacity-80">Via Dante 3, Como</p>
+</div>
+</div>
+</div>
+<div class="relative col-start-2 p-1">
+<div class="absolute w-[calc(100%-0.5rem)] top-48 h-24 left-1">
+<div class="bg-[#198754] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#198754] overflow-hidden">
+<p class="font-bold text-sm">Appuntamento</p>
+<p class="text-xs">Anna Verdi</p>
+</div>
+</div>
+</div>
+<div class="relative col-start-3 p-1">
+<div class="absolute w-[calc(100%-0.5rem)] top-0 h-96 left-1">
+<div class="bg-[#FD7E14] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#FD7E14] overflow-hidden">
+<p class="font-bold text-sm">Trasloco</p>
+<p class="text-xs">Paolo Bianchi</p>
+<p class="text-xs opacity-80">Piazza Duomo 10, Firenze</p>
+</div>
+</div>
+<div class="absolute w-[calc(100%-0.5rem)] top-96 h-48 left-1">
+<div class="bg-[#0D6EFD] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#0D6EFD] overflow-hidden">
+<p class="font-bold text-sm">Sopralluogo</p>
+<p class="text-xs">Laura Neri</p>
+<p class="text-xs opacity-80">Via Garibaldi 5, Roma</p>
+</div>
+</div>
+</div>
+<div class="relative col-start-4 p-1">
+</div>
+<div class="relative col-start-5 p-1">
+<div class="absolute w-[calc(100%-0.5rem)] top-24 h-72 left-1">
+<div class="bg-[#FD7E14] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#FD7E14] overflow-hidden">
+<p class="font-bold text-sm">Trasloco</p>
+<p class="text-xs">Giuseppe Esposito</p>
+<p class="text-xs opacity-80">Corso Umberto I 22, Napoli</p>
+</div>
+</div>
+<div class="absolute w-[calc(33%-0.5rem)] top-[312px] h-24 left-1">
+<div class="bg-[#198754] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#198754] overflow-hidden">
+<p class="font-bold text-sm">App.</p>
+<p class="text-xs">Team A</p>
+</div>
+</div>
+<div class="absolute w-[calc(33%-0.5rem)] top-[312px] h-36 left-[33%]">
+<div class="bg-[#0D6EFD] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#0D6EFD] overflow-hidden">
+<p class="font-bold text-sm">Sopr.</p>
+<p class="text-xs">Marco Russo</p>
+</div>
+</div>
+<div class="absolute w-[calc(34%-0.5rem)] top-[312px] h-48 left-[66%]">
+<div class="bg-[#198754] rounded-lg p-2 h-full text-white cursor-pointer hover:ring-2 hover:ring-offset-2 dark:hover:ring-offset-background-dark/50 hover:ring-[#198754] overflow-hidden">
+<p class="font-bold text-sm">App.</p>
+<p class="text-xs">Team B</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>
