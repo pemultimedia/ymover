@@ -1,0 +1,31 @@
+{
+    "name": "ymover/core",
+    "description": "YMover SaaS CRM Core",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2",
+        "bramus/router": "^1.6",
+        "robmorgan/phinx": "^0.16.0",
+        "tecnickcom/tcpdf": "^6.7",
+        "vlucas/phpdotenv": "^5.6",
+        "league/plates": "^3.5",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "YMover Team",
+            "email": "dev@ymover.com"
+        }
+    ],
+    "config": {
+        "optimize-autoloader": true
+    }
+}

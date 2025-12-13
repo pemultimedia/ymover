@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Core;
+
+use PDO;
+use PDOException;
+use RuntimeException;
+
+final class Database
+{
+    private static ?self $instance = null;
+    public readonly PDO $pdo;
+
+    private function __construct()
+    {
+        $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
+        $db   = $_ENV['DB_DATABASE'] ?? 'ymover';
+        $user = $_ENV['DB_USERNAME'] ?? 'root';
+        $pass = $_ENV['DB_PASSWORD'] ?? '';
+        $port = $_ENV['DB_PORT'] ?? 3306;
+        $charset = 'utf8mb4';
+
+        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
+        $options = [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
+
+        try {
+            $this->pdo = new PDO($dsn, $user, $pass, $options);
+        } catch (PDOException $e) {
+            throw new RuntimeException("Database connection failed: " . $e->getMessage());
+        }
+    }
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    private function __clone() {}
+
+    public function __wakeup()
+    {
+        throw new RuntimeException("Cannot unserialize singleton");
+    }
+}
