@@ -25,9 +25,12 @@ class Router
             $middleware->handle();
         });
 
-        $this->router->get('/', function() {
-            echo "YMover Core is running.";
-        });
+        $this->router->get('/', 'DashboardController@index');
+        
+        // Auth Routes
+        $this->router->get('/login', 'AuthController@showLoginForm');
+        $this->router->post('/login', 'AuthController@login');
+        $this->router->get('/logout', 'AuthController@logout');
 
         // Request Routes
         $this->router->mount('/requests', function () {
