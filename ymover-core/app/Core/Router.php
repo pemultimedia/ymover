@@ -34,6 +34,18 @@ class Router
             $this->router->get('/', 'RequestController@index');
             $this->router->get('/create', 'RequestController@create');
             $this->router->post('/store', 'RequestController@store');
+            $this->router->get('/show', 'RequestController@show');
+        });
+
+        // API Routes
+        $this->router->mount('/api', function () {
+            $this->router->mount('/inventory', function () {
+                $this->router->get('/', 'Api\InventoryController@getInventory');
+                $this->router->post('/version/create', 'Api\InventoryController@createVersion');
+                $this->router->post('/block/create', 'Api\InventoryController@createBlock');
+                $this->router->post('/item/add', 'Api\InventoryController@addItem');
+                $this->router->post('/item/remove', 'Api\InventoryController@removeItem');
+            });
         });
 
         // Subscription Routes
