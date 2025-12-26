@@ -154,4 +154,71 @@ class InventoryController
         
         $this->jsonResponse(['success' => true]);
     }
+
+    public function updateItem(): void
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $id = $data['id'] ?? 0;
+        
+        if (!$id) {
+            $this->jsonResponse(['error' => 'Missing id'], 400);
+        }
+
+        // Calculate volume if dimensions provided
+        $width = (int)($data['width'] ?? 0);
+        $height = (int)($data['height'] ?? 0);
+        $depth = (int)($data['depth'] ?? 0);
+        
+        if ($width && $height && $depth) {
+            $data['volume_m3'] = ($width * $height * $depth) / 1000000;
+        }
+
+        $sql = "UPDATE inventory_items SET 
+                description = :description, 
+                quantity = :quantity, 
+                width = :width, 
+                height = :height, 
+                depth = :depth, 
+                volume_m3 = :volume_m3, 
+                weight_kg = :weight_kg,
+                is_disassembly_needed = :is_disassembly_needed,
+                is_assembly_needed = :is_assembly_needed,
+                is_packing_needed = :is_packing_needed
+                WHERE id = :id";
+        
+        $db = \App\Core\Database::getInstance()->pdo;
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            'id' => $id,
+            'description' => $data['description'],
+            'quantity' => $data['quantity'] ?? 1,
+            'width' => $data['width'] ?? 0,
+            'height' => $data['height'] ?? 0,
+            'depth' => $data['depth'] ?? 0,
+            'volume_m3' => $data['volume_m3'] ?? 0,
+            'weight_kg' => $data['weight_kg'] ?? 0,
+            'is_disassembly_needed' => (int)($data['is_disassembly_needed'] ?? 0),
+            'is_assembly_needed' => (int)($data['is_assembly_needed'] ?? 0),
+            'is_packing_needed' => (int)($data['is_packing_needed'] ?? 0),
+        ]);
+
+        $this->jsonResponse(['success' => true]);
+    }
+
+    public function moveItem(): void
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $id = $data['id'] ?? 0;
+        $newBlockId = $data['block_id'] ?? 0;
+
+        if (!$id || !$newBlockId) {
+            $this->jsonResponse(['error' => 'Missing id or block_id'], 400);
+        }
+
+        $db = \App\Core\Database::getInstance()->pdo;
+        $stmt = $db->prepare("UPDATE inventory_items SET block_id = :block_id WHERE id = :id");
+        $stmt->execute(['block_id' => $newBlockId, 'id' => $id]);
+
+        $this->jsonResponse(['success' => true]);
+    }
 }

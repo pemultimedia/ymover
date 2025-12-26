@@ -135,11 +135,16 @@ class RequestController
         $stmt = $db->prepare("SELECT * FROM stops WHERE request_id = :request_id ORDER BY id ASC");
         $stmt->execute(['request_id' => $id]);
         $stops = $stmt->fetchAll();
+
+        // Fetch Quotes
+        $quoteModel = new \App\Models\Quote();
+        $quotes = $quoteModel->getByRequestId($id);
         
         View::render('requests/show', [
             'request' => $request,
             'customer' => $customer,
-            'stops' => $stops
+            'stops' => $stops,
+            'quotes' => $quotes
         ]);
     }
 

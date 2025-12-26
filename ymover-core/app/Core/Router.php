@@ -53,6 +53,15 @@ class Router
             $this->router->get('/remove-stop', 'RequestController@removeStop');
         });
 
+        // Quote Routes
+        $this->router->mount('/quotes', function () {
+            $this->router->get('/create', 'QuoteController@create');
+            $this->router->post('/store', 'QuoteController@store');
+            $this->router->get('/show', 'QuoteController@show');
+            $this->router->get('/public', 'QuoteController@publicView');
+            $this->router->post('/accept', 'QuoteController@accept');
+        });
+
         // API Routes
         $this->router->mount('/api', function () {
             $this->router->mount('/inventory', function () {
@@ -60,6 +69,8 @@ class Router
                 $this->router->post('/version/create', 'Api\InventoryController@createVersion');
                 $this->router->post('/block/create', 'Api\InventoryController@createBlock');
                 $this->router->post('/item/add', 'Api\InventoryController@addItem');
+                $this->router->post('/item/update', 'Api\InventoryController@updateItem');
+                $this->router->post('/item/move', 'Api\InventoryController@moveItem');
                 $this->router->post('/item/remove', 'Api\InventoryController@removeItem');
             });
         });

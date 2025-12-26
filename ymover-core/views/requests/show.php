@@ -52,6 +52,30 @@
             </div>
         </div>
 
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Preventivi</h6>
+                <a href="/quotes/create?request_id=<?= $request['id'] ?>" class="btn btn-sm btn-outline-success">+ Preventivo</a>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    <?php if (empty($quotes)): ?>
+                        <li class="list-group-item text-muted small text-center py-3">Nessun preventivo generato.</li>
+                    <?php else: ?>
+                        <?php foreach ($quotes as $q): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="/quotes/show?id=<?= $q['id'] ?>" class="fw-bold">#<?= $q['id'] ?></a>
+                                    <div class="small text-muted">€ <?= number_format((float)$q['total_amount'], 2, ',', '.') ?></div>
+                                </div>
+                                <span class="badge bg-<?= $q['status'] === 'accepted' ? 'success' : 'secondary' ?>"><?= $q['status'] ?></span>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+
         <div class="card shadow-sm">
             <div class="card-header bg-light">
                 <h6 class="mb-0">Note Interne</h6>
@@ -120,13 +144,19 @@
                                                     <th class="text-end">Azioni</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody :data-block-id="block.id" class="sortable-items">
                                                 <template x-for="item in block.items" :key="item.id">
-                                                    <tr>
-                                                        <td x-text="item.description"></td>
+                                                    <tr :data-item-id="item.id" class="item-row">
+                                                        <td>
+                                                            <span class="me-2 text-muted cursor-move">☰</span>
+                                                            <span x-text="item.description"></span>
+                                                        </td>
                                                         <td class="text-center" x-text="item.quantity"></td>
                                                         <td class="text-end" x-text="formatVolume(item.volume_m3)"></td>
                                                         <td class="text-end">
+                                                            <button class="btn btn-sm btn-link p-0 me-2" @click="editItem(item)">
+                                                                ✎
+                                                            </button>
                                                             <button class="btn btn-sm btn-link text-danger p-0" @click="removeItem(item.id)">
                                                                 &times;
                                                             </button>
@@ -134,7 +164,7 @@
                                                     </tr>
                                                 </template>
                                                 <!-- Add Item Row -->
-                                                <tr class="bg-light">
+                                                <tr class="bg-light no-drag">
                                                     <td>
                                                         <input type="text" class="form-control form-control-sm" placeholder="Nuovo oggetto..." 
                                                                @keydown.enter="addItem(block.id, $event.target)">
@@ -170,9 +200,67 @@ document.addEventListener('alpine:init', () => {
         currentVersion: null,
         loading: true,
         addStopModal: false,
+        editItemModal: false,
+        editingItem: null,
 
         init() {
             this.loadInventory();
+            this.$nextTick(() => {
+                this.initSortable();
+            });
+        },
+
+        initSortable() {
+            const self = this;
+            document.querySelectorAll('.sortable-items').forEach(el => {
+                new Sortable(el, {
+                    group: 'inventory',
+                    draggable: '.item-row',
+                    filter: '.no-drag',
+                    handle: '.cursor-move',
+                    animation: 150,
+                    onEnd: async (evt) => {
+                        const itemId = evt.item.getAttribute('data-item-id');
+                        const newBlockId = evt.to.getAttribute('data-block-id');
+                        
+                        if (evt.from !== evt.to) {
+                            await self.moveItem(itemId, newBlockId);
+                        }
+                    }
+                });
+            });
+        },
+
+        async moveItem(itemId, blockId) {
+            try {
+                await fetch('/api/inventory/item/move', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: itemId, block_id: blockId })
+                });
+                this.loadInventory();
+            } catch (e) {
+                alert('Errore spostamento oggetto');
+            }
+        },
+
+        editItem(item) {
+            this.editingItem = JSON.parse(JSON.stringify(item));
+            this.editItemModal = true;
+        },
+
+        async saveItem() {
+            try {
+                await fetch('/api/inventory/item/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.editingItem)
+                });
+                this.editItemModal = false;
+                this.loadInventory();
+            } catch (e) {
+                alert('Errore salvataggio oggetto');
+            }
         },
 
         async loadInventory() {
@@ -348,4 +436,64 @@ document.addEventListener('alpine:init', () => {
 
 <style>
 [x-cloak] { display: none !important; }
+.cursor-move { cursor: move; }
+.item-row:hover { background-color: #f8f9fa; }
 </style>
+
+<!-- Edit Item Modal -->
+<div class="modal fade" :class="{ 'show d-block': editItemModal }" tabindex="-1" style="background: rgba(0,0,0,0.5)" x-show="editItemModal" x-cloak>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifica Oggetto</h5>
+                <button type="button" class="btn-close" @click="editItemModal = false"></button>
+            </div>
+            <div class="modal-body" x-if="editingItem">
+                <div class="mb-3">
+                    <label class="form-label">Descrizione</label>
+                    <input type="text" x-model="editingItem.description" class="form-control">
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Quantità</label>
+                        <input type="number" x-model="editingItem.quantity" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Volume (m³)</label>
+                        <input type="number" step="0.001" x-model="editingItem.volume_m3" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Largh (cm)</label>
+                        <input type="number" x-model="editingItem.width" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Alt (cm)</label>
+                        <input type="number" x-model="editingItem.height" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Prof (cm)</label>
+                        <input type="number" x-model="editingItem.depth" class="form-control">
+                    </div>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" x-model="editingItem.is_disassembly_needed" id="disasm">
+                    <label class="form-check-label" for="disasm">Smontaggio</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" x-model="editingItem.is_assembly_needed" id="asm">
+                    <label class="form-check-label" for="asm">Rimontaggio</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" x-model="editingItem.is_packing_needed" id="pack">
+                    <label class="form-check-label" for="pack">Imballaggio</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="editItemModal = false">Annulla</button>
+                <button type="button" class="btn btn-primary" @click="saveItem">Salva</button>
+            </div>
+        </div>
+    </div>
+</div>
