@@ -58,7 +58,7 @@ class CalendarController
         
         // If it's a job from a request, fetch request info for title if not provided
         if (isset($data['request_id']) && empty($data['title'])) {
-            $request = $this->requestModel->findById((int)$data['request_id']);
+            $request = $this->requestModel->findById((int)$data['request_id'], $_SESSION['tenant_id']);
             $data['title'] = "Lavoro #" . $data['request_id'];
         }
 

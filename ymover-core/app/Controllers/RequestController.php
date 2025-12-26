@@ -113,18 +113,9 @@ class RequestController
         }
 
         // Fetch Request
-        // Ideally we should check tenant ownership here
-        // $req = $this->requestModel->findById((int)$id); 
-        // For now let's assume we have a findById in Request Model (we need to add it or use a generic one)
-        // Let's add findById to Request Model quickly via direct DB call here or update Model
+        $request = $this->requestModel->findById((int)$id, $_SESSION['tenant_id']);
         
-        // Quick fix: direct DB call for now to keep moving, but ideally update Model
-        $db = \App\Core\Database::getInstance()->pdo;
-        $stmt = $db->prepare("SELECT * FROM requests WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        $request = $stmt->fetch();
-        
-        if (!$request || $request['tenant_id'] != $_SESSION['tenant_id']) {
+        if (!$request) {
              header("Location: /requests");
              exit;
         }

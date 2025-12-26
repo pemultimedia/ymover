@@ -21,6 +21,7 @@ class AuthMiddleware
         if (strpos($uri, '/webhook') === 0 || 
             strpos($uri, '/login') === 0 || 
             strpos($uri, '/subscribe') === 0 ||
+            strpos($uri, '/quotes/public') === 0 ||
             strpos($uri, '/assets') === 0) {
             return;
         }

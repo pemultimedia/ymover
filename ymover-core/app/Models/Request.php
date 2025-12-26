@@ -26,4 +26,17 @@ class Request extends BaseModel
         ]);
         return (int)$this->db->lastInsertId();
     }
+
+    public function findById(int $id, ?int $tenantId = null): ?array
+    {
+        $sql = "SELECT * FROM requests WHERE id = :id";
+        $params = ['id' => $id];
+        if ($tenantId !== null) {
+            $sql .= " AND tenant_id = :tenant_id";
+            $params['tenant_id'] = $tenantId;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetch() ?: null;
+    }
 }

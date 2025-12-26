@@ -30,7 +30,7 @@ class QuoteController
             exit;
         }
 
-        $request = $this->requestModel->findById($requestId);
+        $request = $this->requestModel->findById($requestId, $_SESSION['tenant_id']);
         $versions = $this->versionModel->getByRequestId($requestId);
 
         View::render('quotes/create', [
@@ -54,14 +54,14 @@ class QuoteController
     public function show(): void
     {
         $id = (int)($_GET['id'] ?? 0);
-        $quote = $this->quoteModel->findById($id);
+        $quote = $this->quoteModel->findById($id, $_SESSION['tenant_id']);
         
         if (!$quote) {
             header("Location: /requests");
             exit;
         }
 
-        $request = $this->requestModel->findById((int)$quote['request_id']);
+        $request = $this->requestModel->findById((int)$quote['request_id'], $_SESSION['tenant_id']);
 
         View::render('quotes/show', [
             'quote' => $quote,
@@ -89,7 +89,7 @@ class QuoteController
     public function accept(): void
     {
         $id = (int)($_POST['id'] ?? 0);
-        $quote = $this->quoteModel->findById($id);
+        $quote = $this->quoteModel->findById($id, $_SESSION['tenant_id']);
         
         if ($quote) {
             $this->quoteModel->updateStatus($id, 'accepted');
@@ -107,7 +107,11 @@ class QuoteController
     public function pay(): void
     {
         $id = (int)($_POST['id'] ?? 0);
-        $this->quoteModel->markAsPaid($id);
+        $quote = $this->quoteModel->findById($id, $_SESSION['tenant_id']);
+        
+        if ($quote) {
+            $this->quoteModel->markAsPaid($id);
+        }
         
         header("Location: /quotes/show?id=" . $id . "&paid=1");
         exit;

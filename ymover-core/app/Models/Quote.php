@@ -8,14 +8,13 @@ class Quote extends BaseModel
 {
     public function create(array $data): int
     {
-        $sql = "INSERT INTO quotes (tenant_id, request_id, inventory_version_id, quote_number, date_issued, valid_until, amount_total, status) 
-                VALUES (:tenant_id, :request_id, :inventory_version_id, :quote_number, :date_issued, :valid_until, :amount_total, :status)";
+        $sql = "INSERT INTO quotes (request_id, inventory_version_id, quote_number, date_issued, valid_until, amount_total, status) 
+                VALUES (:request_id, :inventory_version_id, :quote_number, :date_issued, :valid_until, :amount_total, :status)";
         $stmt = $this->db->prepare($sql);
         
         $quoteNumber = 'PREV-' . date('Y') . '-' . str_pad((string)rand(1, 999), 3, '0', STR_PAD_LEFT);
         
         $stmt->execute([
-            'tenant_id' => $data['tenant_id'],
             'request_id' => $data['request_id'],
             'inventory_version_id' => $data['inventory_version_id'] ?? null,
             'quote_number' => $quoteNumber,
@@ -27,10 +26,16 @@ class Quote extends BaseModel
         return (int)$this->db->lastInsertId();
     }
 
-    public function findById(int $id): ?array
+    public function findById(int $id, ?int $tenantId = null): ?array
     {
-        $stmt = $this->db->prepare("SELECT * FROM quotes WHERE id = :id");
-        $stmt->execute(['id' => $id]);
+        $sql = "SELECT q.* FROM quotes q JOIN requests r ON q.request_id = r.id WHERE q.id = :id";
+        $params = ['id' => $id];
+        if ($tenantId !== null) {
+            $sql .= " AND r.tenant_id = :tenant_id";
+            $params['tenant_id'] = $tenantId;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetch() ?: null;
     }
 
