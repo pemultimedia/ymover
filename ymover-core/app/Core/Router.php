@@ -70,7 +70,14 @@ class Router
             $this->router->get('/show', 'QuoteController@show');
             $this->router->get('/public', 'QuoteController@publicView');
             $this->router->post('/accept', 'QuoteController@accept');
+            $this->router->post('/pay', 'QuoteController@pay');
         });
+
+        // Marketplace Routes
+        $this->router->get('/marketplace', 'MarketplaceController@index');
+
+        // Email/Communications Routes
+        $this->router->get('/communications', 'EmailController@index');
 
         // Resource Routes
         $this->router->mount('/resources', function () {

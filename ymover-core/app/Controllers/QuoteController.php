@@ -103,4 +103,13 @@ class QuoteController
         header("Location: /quotes/public?id=" . $id . "&accepted=1");
         exit;
     }
+
+    public function pay(): void
+    {
+        $id = (int)($_POST['id'] ?? 0);
+        $this->quoteModel->markAsPaid($id);
+        
+        header("Location: /quotes/show?id=" . $id . "&paid=1");
+        exit;
+    }
 }

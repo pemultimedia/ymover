@@ -39,6 +39,13 @@
                 <li>
                     <a href="/calendar" class="nav-link text-white">Calendario</a>
                 </li>
+                <hr>
+                <li>
+                    <a href="/marketplace" class="nav-link text-white">Marketplace B2B</a>
+                </li>
+                <li>
+                    <a href="/communications" class="nav-link text-white">Comunicazioni</a>
+                </li>
             </ul>
         </div>
         <?php endif; ?>

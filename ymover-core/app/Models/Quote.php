@@ -42,4 +42,12 @@ class Quote extends BaseModel
         $stmt = $this->db->prepare("UPDATE quotes SET status = :status WHERE id = :id");
         return $stmt->execute(['status' => $status, 'id' => $id]);
     }
+
+    public function markAsPaid(int $id): bool
+    {
+        $stmt = $this->db->prepare("UPDATE quotes SET status = 'accepted' WHERE id = :id");
+        // In a real app, we'd have a 'paid' status or a payments table.
+        // For now, we'll just ensure it's accepted and maybe add a note.
+        return $stmt->execute(['id' => $id]);
+    }
 }

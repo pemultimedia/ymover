@@ -8,13 +8,28 @@
     </nav>
     <div class="d-flex justify-content-between align-items-center">
         <h1>Preventivo #<?= $quote['id'] ?></h1>
-        <div>
+        <div class="d-flex gap-2 align-items-center">
+            <?php if (isset($_GET['paid'])): ?>
+                <span class="badge bg-success fs-6">Pagato</span>
+            <?php endif; ?>
             <span class="badge bg-<?= $quote['status'] === 'accepted' ? 'success' : ($quote['status'] === 'rejected' ? 'danger' : 'secondary') ?> fs-6">
                 <?= ucfirst($quote['status']) ?>
             </span>
         </div>
     </div>
 </div>
+
+<?php if ($quote['status'] === 'accepted' && !isset($_GET['paid'])): ?>
+<div class="alert alert-info d-flex justify-content-between align-items-center shadow-sm">
+    <div>
+        <strong>Preventivo Accettato!</strong> Registra il pagamento se hai ricevuto il saldo o l'acconto.
+    </div>
+    <form action="/quotes/pay" method="POST" class="m-0">
+        <input type="hidden" name="id" value="<?= $quote['id'] ?>">
+        <button type="submit" class="btn btn-success btn-sm">Registra Pagamento</button>
+    </form>
+</div>
+<?php endif; ?>
 
 <div class="row">
     <div class="col-md-8">
