@@ -48,7 +48,7 @@ class AuthController
 
         $user = $this->userModel->findByEmail($email);
 
-        if ($user && password_verify($password, $user['password_hash'])) {
+        if ($user && password_verify($password, $user['password'])) {
             // Login Success
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['tenant_id'] = $user['tenant_id'];

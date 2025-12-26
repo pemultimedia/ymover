@@ -6,10 +6,10 @@ namespace App\Models;
 
 class User extends BaseModel
 {
-    public function findByEmail(string $email, int $tenantId): ?array
+    public function findByEmail(string $email): ?array
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email AND tenant_id = :tenant_id");
-        $stmt->execute(['email' => $email, 'tenant_id' => $tenantId]);
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute(['email' => $email]);
         return $stmt->fetch() ?: null;
     }
 
