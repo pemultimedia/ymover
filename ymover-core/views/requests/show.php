@@ -69,7 +69,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <a href="/quotes/show?id=<?= $q['id'] ?>" class="fw-bold">#<?= $q['id'] ?></a>
-                                    <div class="small text-muted">€ <?= number_format((float)$q['total_amount'], 2, ',', '.') ?></div>
+                                    <div class="small text-muted">€ <?= number_format((float)$q['amount_total'], 2, ',', '.') ?></div>
                                 </div>
                                 <span class="badge bg-<?= $q['status'] === 'accepted' ? 'success' : 'secondary' ?>"><?= $q['status'] ?></span>
                             </li>

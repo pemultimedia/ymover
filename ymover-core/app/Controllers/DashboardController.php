@@ -19,7 +19,7 @@ class DashboardController
         $requestStats = $stmt->fetchAll();
 
         // 2. Revenue Stats (Accepted Quotes)
-        $stmt = $db->prepare("SELECT SUM(total_amount) as total FROM quotes WHERE tenant_id = :tenant_id AND status = 'accepted'");
+        $stmt = $db->prepare("SELECT SUM(amount_total) as total FROM quotes WHERE tenant_id = :tenant_id AND status = 'accepted'");
         $stmt->execute(['tenant_id' => $tenantId]);
         $revenue = $stmt->fetch()['total'] ?? 0;
 

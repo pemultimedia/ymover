@@ -21,7 +21,7 @@
             <div class="brand">YMover</div>
             <div class="text-end">
                 <h4 class="mb-0">Preventivo #<?= $quote['id'] ?></h4>
-                <p class="text-muted small">Data: <?= date('d/m/Y', strtotime($quote['created_at'])) ?></p>
+                <p class="text-muted small">Data: <?= date('d/m/Y', strtotime($quote['date_issued'])) ?></p>
             </div>
         </div>
 
@@ -42,13 +42,13 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <h6>Scadenza Offerta</h6>
-                    <p class="small text-danger fw-bold"><?= $quote['expiration_date'] ? date('d/m/Y', strtotime($quote['expiration_date'])) : 'Nessuna' ?></p>
+                    <p class="small text-danger fw-bold"><?= $quote['valid_until'] ? date('d/m/Y', strtotime($quote['valid_until'])) : 'Nessuna' ?></p>
                 </div>
             </div>
 
             <div class="price-box">
                 <div class="text-muted mb-2">Totale Preventivato (IVA Inclusa)</div>
-                <div class="price-value">€ <?= number_format((float)$quote['total_amount'], 2, ',', '.') ?></div>
+                <div class="price-value">€ <?= number_format((float)$quote['amount_total'], 2, ',', '.') ?></div>
             </div>
 
             <div class="mt-5">

@@ -40,17 +40,17 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-sm-4 text-muted">Importo Totale:</div>
-                    <div class="col-sm-8 fw-bold fs-5">€ <?= number_format((float)$quote['total_amount'], 2, ',', '.') ?></div>
+                    <div class="col-sm-8 fw-bold fs-5">€ <?= number_format((float)$quote['amount_total'], 2, ',', '.') ?></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-4 text-muted">Data Creazione:</div>
-                    <div class="col-sm-8"><?= date('d/m/Y H:i', strtotime($quote['created_at'])) ?></div>
+                    <div class="col-sm-8"><?= date('d/m/Y', strtotime($quote['date_issued'])) ?></div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-4 text-muted">Scadenza:</div>
-                    <div class="col-sm-8"><?= $quote['expiration_date'] ? date('d/m/Y', strtotime($quote['expiration_date'])) : 'Nessuna' ?></div>
+                    <div class="col-sm-8"><?= $quote['valid_until'] ? date('d/m/Y', strtotime($quote['valid_until'])) : 'Nessuna' ?></div>
                 </div>
-                <?php if ($quote['internal_notes']): ?>
+                <?php if (isset($quote['internal_notes']) && $quote['internal_notes']): ?>
                 <div class="row">
                     <div class="col-sm-4 text-muted">Note Interne:</div>
                     <div class="col-sm-8 small"><?= nl2br(htmlspecialchars($quote['internal_notes'])) ?></div>

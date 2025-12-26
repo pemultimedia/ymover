@@ -8,17 +8,21 @@ class Quote extends BaseModel
 {
     public function create(array $data): int
     {
-        $sql = "INSERT INTO quotes (tenant_id, request_id, inventory_version_id, total_amount, status, expiration_date, internal_notes) 
-                VALUES (:tenant_id, :request_id, :inventory_version_id, :total_amount, :status, :expiration_date, :internal_notes)";
+        $sql = "INSERT INTO quotes (tenant_id, request_id, inventory_version_id, quote_number, date_issued, valid_until, amount_total, status) 
+                VALUES (:tenant_id, :request_id, :inventory_version_id, :quote_number, :date_issued, :valid_until, :amount_total, :status)";
         $stmt = $this->db->prepare($sql);
+        
+        $quoteNumber = 'PREV-' . date('Y') . '-' . str_pad((string)rand(1, 999), 3, '0', STR_PAD_LEFT);
+        
         $stmt->execute([
             'tenant_id' => $data['tenant_id'],
             'request_id' => $data['request_id'],
             'inventory_version_id' => $data['inventory_version_id'] ?? null,
-            'total_amount' => $data['total_amount'] ?? 0.00,
+            'quote_number' => $quoteNumber,
+            'date_issued' => date('Y-m-d'),
+            'valid_until' => $data['valid_until'] ?? $data['expiration_date'] ?? null,
+            'amount_total' => $data['amount_total'] ?? $data['total_amount'] ?? 0.00,
             'status' => $data['status'] ?? 'draft',
-            'expiration_date' => $data['expiration_date'] ?? null,
-            'internal_notes' => $data['internal_notes'] ?? null,
         ]);
         return (int)$this->db->lastInsertId();
     }
