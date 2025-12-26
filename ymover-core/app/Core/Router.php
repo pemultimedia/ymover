@@ -32,6 +32,16 @@ class Router
         $this->router->post('/login', 'AuthController@login');
         $this->router->get('/logout', 'AuthController@logout');
 
+        // User/Team Routes
+        $this->router->mount('/users', function () {
+            $this->router->get('/', 'UserController@index');
+            $this->router->get('/create', 'UserController@create');
+            $this->router->post('/store', 'UserController@store');
+            $this->router->get('/edit', 'UserController@edit');
+            $this->router->post('/update', 'UserController@update');
+            $this->router->get('/delete', 'UserController@delete');
+        });
+
         // Customer Routes
         $this->router->mount('/customers', function () {
             $this->router->get('/', 'CustomerController@index');
@@ -60,6 +70,24 @@ class Router
             $this->router->get('/show', 'QuoteController@show');
             $this->router->get('/public', 'QuoteController@publicView');
             $this->router->post('/accept', 'QuoteController@accept');
+        });
+
+        // Resource Routes
+        $this->router->mount('/resources', function () {
+            $this->router->get('/', 'ResourceController@index');
+            $this->router->get('/create', 'ResourceController@create');
+            $this->router->post('/store', 'ResourceController@store');
+            $this->router->get('/edit', 'ResourceController@edit');
+            $this->router->post('/update', 'ResourceController@update');
+            $this->router->get('/delete', 'ResourceController@delete');
+        });
+
+        // Calendar Routes
+        $this->router->mount('/calendar', function () {
+            $this->router->get('/', 'CalendarController@index');
+            $this->router->get('/events', 'CalendarController@getEvents');
+            $this->router->post('/store', 'CalendarController@store');
+            $this->router->get('/delete', 'CalendarController@delete');
         });
 
         // API Routes

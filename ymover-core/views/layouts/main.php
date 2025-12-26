@@ -29,6 +29,16 @@
                 <li>
                     <a href="/requests" class="nav-link text-white">Richieste</a>
                 </li>
+                <hr>
+                <li>
+                    <a href="/resources" class="nav-link text-white">Risorse</a>
+                </li>
+                <li>
+                    <a href="/users" class="nav-link text-white">Team</a>
+                </li>
+                <li>
+                    <a href="/calendar" class="nav-link text-white">Calendario</a>
+                </li>
             </ul>
         </div>
         <?php endif; ?>

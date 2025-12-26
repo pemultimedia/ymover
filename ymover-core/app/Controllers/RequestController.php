@@ -139,12 +139,17 @@ class RequestController
         // Fetch Quotes
         $quoteModel = new \App\Models\Quote();
         $quotes = $quoteModel->getByRequestId($id);
+
+        // Fetch Resources
+        $resourceModel = new \App\Models\Resource();
+        $resources = $resourceModel->getAllByTenant($_SESSION['tenant_id']);
         
         View::render('requests/show', [
             'request' => $request,
             'customer' => $customer,
             'stops' => $stops,
-            'quotes' => $quotes
+            'quotes' => $quotes,
+            'resources' => $resources
         ]);
     }
 

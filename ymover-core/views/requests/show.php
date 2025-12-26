@@ -21,6 +21,9 @@
                 <h5 class="card-title"><?= htmlspecialchars($customer['name']) ?></h5>
                 <p class="text-muted small mb-2">ID: #<?= $request['id'] ?></p>
                 <div class="d-grid gap-2">
+                    <?php if ($request['status'] === 'confirmed'): ?>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#scheduleModal">📅 Pianifica Lavoro</button>
+                    <?php endif; ?>
                     <button class="btn btn-outline-secondary btn-sm">Modifica Anagrafica</button>
                 </div>
             </div>
@@ -428,6 +431,51 @@ document.addEventListener('alpine:init', () => {
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="addStopModal = false">Annulla</button>
                     <button type="submit" class="btn btn-primary">Salva Stop</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Modal -->
+<div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pianifica Lavoro #<?= $request['id'] ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/calendar/store" method="POST">
+                <input type="hidden" name="request_id" value="<?= $request['id'] ?>">
+                <input type="hidden" name="type" value="job">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Titolo Evento</label>
+                        <input type="text" name="title" class="form-control" value="Trasloco <?= htmlspecialchars($customer['name']) ?>" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Data e Ora Inizio</label>
+                            <input type="datetime-local" name="start_datetime" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Data e Ora Fine</label>
+                            <input type="datetime-local" name="end_datetime" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Risorsa Principale (Opzionale)</label>
+                        <select name="resource_id" class="form-select">
+                            <option value="">-- Nessuna --</option>
+                            <?php foreach ($resources as $r): ?>
+                                <option value="<?= $r['id'] ?>"><?= htmlspecialchars($r['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-success">Pianifica</button>
                 </div>
             </form>
         </div>

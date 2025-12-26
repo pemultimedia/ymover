@@ -26,4 +26,36 @@ class User extends BaseModel
         ]);
         return (int)$this->db->lastInsertId();
     }
+
+    public function getAllByTenant(int $tenantId): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE tenant_id = :tenant_id ORDER BY name ASC");
+        $stmt->execute(['tenant_id' => $tenantId]);
+        return $stmt->fetchAll();
+    }
+
+    public function findById(int $id): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        $sql = "UPDATE users SET name = :name, email = :email, role = :role WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'id' => $id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $data['role']
+        ]);
+    }
+
+    public function delete(int $id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM users WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
+    }
 }
