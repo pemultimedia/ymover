@@ -37,7 +37,8 @@ class RequestController
 
     public function create(): void
     {
-        View::render('requests/create');
+        $customers = $this->customerModel->getAllByTenant($_SESSION['tenant_id']);
+        View::render('requests/create', ['customers' => $customers]);
     }
 
     public function store(): void
@@ -45,17 +46,23 @@ class RequestController
         $tenantId = $_SESSION['tenant_id'];
         $data = $_POST;
         
-        // 1. Create Customer if new (simplified logic)
-        // In a real app we would check if customer_id is passed or if we need to create one
-        // For this wizard, let's assume we create a new customer for every request if not selected
+        // 1. Get or Create Customer
+        $customerId = $data['customer_id'] ?? null;
         
-        $customerData = [
-            'tenant_id' => $tenantId,
-            'name' => $data['customer_name'],
-            'type' => 'private', // Default
-        ];
-        
-        $customerId = $this->customerModel->create($customerData);
+        if (empty($customerId) && !empty($data['customer_name'])) {
+            $customerData = [
+                'tenant_id' => $tenantId,
+                'name' => $data['customer_name'],
+                'type' => 'private',
+            ];
+            $customerId = $this->customerModel->create($customerData);
+        }
+
+        if (empty($customerId)) {
+            $_SESSION['error'] = 'Devi selezionare o creare un cliente.';
+            header("Location: /requests/create");
+            exit;
+        }
         
         // 2. Create Request
         $requestData = [
@@ -67,8 +74,19 @@ class RequestController
         ];
         
         $requestId = $this->requestModel->create($requestData);
+
+        // 3. Create Stops if provided
+        $db = \App\Core\Database::getInstance()->pdo;
+        if (!empty($data['origin_address'])) {
+            $stmt = $db->prepare("INSERT INTO stops (request_id, address_full) VALUES (:request_id, :address)");
+            $stmt->execute(['request_id' => $requestId, 'address' => $data['origin_address']]);
+        }
+        if (!empty($data['destination_address'])) {
+            $stmt = $db->prepare("INSERT INTO stops (request_id, address_full) VALUES (:request_id, :address)");
+            $stmt->execute(['request_id' => $requestId, 'address' => $data['destination_address']]);
+        }
         
-        // 3. Create Initial Inventory Version & Block
+        // 4. Create Initial Inventory Version & Block
         $versionModel = new InventoryVersion();
         $versionId = $versionModel->create([
             'request_id' => $requestId,
@@ -113,9 +131,81 @@ class RequestController
         
         $customer = $this->customerModel->findById($request['customer_id']);
         
+        // Fetch Stops
+        $stmt = $db->prepare("SELECT * FROM stops WHERE request_id = :request_id ORDER BY id ASC");
+        $stmt->execute(['request_id' => $id]);
+        $stops = $stmt->fetchAll();
+        
         View::render('requests/show', [
             'request' => $request,
-            'customer' => $customer
+            'customer' => $customer,
+            'stops' => $stops
         ]);
+    }
+
+    public function updateStatus(): void
+    {
+        $id = $_POST['id'] ?? null;
+        $status = $_POST['status'] ?? null;
+
+        if (!$id || !$status) {
+            header("Location: /requests");
+            exit;
+        }
+
+        $db = \App\Core\Database::getInstance()->pdo;
+        $stmt = $db->prepare("UPDATE requests SET status = :status WHERE id = :id AND tenant_id = :tenant_id");
+        $stmt->execute([
+            'status' => $status,
+            'id' => $id,
+            'tenant_id' => $_SESSION['tenant_id']
+        ]);
+
+        header("Location: /requests/show?id=" . $id);
+        exit;
+    }
+
+    public function addStop(): void
+    {
+        $requestId = $_POST['request_id'] ?? null;
+        if (!$requestId) {
+            header("Location: /requests");
+            exit;
+        }
+
+        $db = \App\Core\Database::getInstance()->pdo;
+        $sql = "INSERT INTO stops (request_id, address_full, city, floor, elevator_status, notes) 
+                VALUES (:request_id, :address_full, :city, :floor, :elevator_status, :notes)";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            'request_id' => $requestId,
+            'address_full' => $_POST['address_full'],
+            'city' => $_POST['city'] ?? null,
+            'floor' => $_POST['floor'] ?? 0,
+            'elevator_status' => $_POST['elevator_status'] ?? 'unknown',
+            'notes' => $_POST['notes'] ?? null,
+        ]);
+
+        header("Location: /requests/show?id=" . $requestId);
+        exit;
+    }
+
+    public function removeStop(): void
+    {
+        $id = $_GET['id'] ?? null;
+        $requestId = $_GET['request_id'] ?? null;
+
+        if (!$id || !$requestId) {
+            header("Location: /requests");
+            exit;
+        }
+
+        $db = \App\Core\Database::getInstance()->pdo;
+        $stmt = $db->prepare("DELETE FROM stops WHERE id = :id AND request_id = :request_id");
+        $stmt->execute(['id' => $id, 'request_id' => $requestId]);
+
+        header("Location: /requests/show?id=" . $requestId);
+        exit;
     }
 }

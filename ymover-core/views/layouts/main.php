@@ -23,6 +23,9 @@
                     <a href="/" class="nav-link text-white">Dashboard</a>
                 </li>
                 <li>
+                    <a href="/customers" class="nav-link text-white">Clienti</a>
+                </li>
+                <li>
                     <a href="/requests" class="nav-link text-white">Richieste</a>
                 </li>
             </ul>

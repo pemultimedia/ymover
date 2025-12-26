@@ -4,7 +4,18 @@
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">Cliente</h6>
-                <span class="badge bg-primary"><?= htmlspecialchars(ucfirst($request['status'])) ?></span>
+                <form action="/requests/update-status" method="POST" class="d-inline">
+                    <input type="hidden" name="id" value="<?= $request['id'] ?>">
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
+                        <?php 
+                        $statuses = ['new', 'contacted', 'survey_done', 'quoted', 'confirmed', 'completed', 'cancelled', 'archived'];
+                        foreach ($statuses as $status): ?>
+                            <option value="<?= $status ?>" <?= $request['status'] === $status ? 'selected' : '' ?>>
+                                <?= ucfirst(str_replace('_', ' ', $status)) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
             </div>
             <div class="card-body">
                 <h5 class="card-title"><?= htmlspecialchars($customer['name']) ?></h5>
@@ -22,10 +33,21 @@
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
-                    <!-- Placeholder for Stops List -->
-                    <li class="list-group-item text-muted small text-center py-3">
-                        Nessun indirizzo inserito.
-                    </li>
+                    <?php if (empty($stops)): ?>
+                        <li class="list-group-item text-muted small text-center py-3">
+                            Nessun indirizzo inserito.
+                        </li>
+                    <?php else: ?>
+                        <?php foreach ($stops as $stop): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold"><?= htmlspecialchars($stop['address_full']) ?></div>
+                                    <small class="text-muted"><?= htmlspecialchars($stop['city'] ?? '') ?> - Piano: <?= $stop['floor'] ?></small>
+                                </div>
+                                <a href="/requests/remove-stop?id=<?= $stop['id'] ?>&request_id=<?= $request['id'] ?>" class="btn btn-sm text-danger" onclick="return confirm('Rimuovere questo stop?')">&times;</a>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -147,6 +169,7 @@ document.addEventListener('alpine:init', () => {
         versions: [],
         currentVersion: null,
         loading: true,
+        addStopModal: false,
 
         init() {
             this.loadInventory();
@@ -274,3 +297,55 @@ document.addEventListener('alpine:init', () => {
     }));
 });
 </script>
+
+<!-- Add Stop Modal -->
+<div class="modal fade" :class="{ 'show d-block': addStopModal }" tabindex="-1" style="background: rgba(0,0,0,0.5)" x-show="addStopModal" x-cloak>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Aggiungi Stop</h5>
+                <button type="button" class="btn-close" @click="addStopModal = false"></button>
+            </div>
+            <form action="/requests/add-stop" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="request_id" value="<?= $request['id'] ?>">
+                    <div class="mb-3">
+                        <label class="form-label">Indirizzo Completo</label>
+                        <input type="text" name="address_full" class="form-control" required placeholder="Via Roma 1, Milano">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Città</label>
+                        <input type="text" name="city" class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Piano</label>
+                            <input type="number" name="floor" class="form-control" value="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ascensore</label>
+                            <select name="elevator_status" class="form-select">
+                                <option value="unknown">Sconosciuto</option>
+                                <option value="yes">Sì</option>
+                                <option value="no">No</option>
+                                <option value="external_needed">Serve Esterno</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Note</label>
+                        <textarea name="notes" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @click="addStopModal = false">Annulla</button>
+                    <button type="submit" class="btn btn-primary">Salva Stop</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+[x-cloak] { display: none !important; }
+</style>

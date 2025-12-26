@@ -32,12 +32,25 @@ class Router
         $this->router->post('/login', 'AuthController@login');
         $this->router->get('/logout', 'AuthController@logout');
 
+        // Customer Routes
+        $this->router->mount('/customers', function () {
+            $this->router->get('/', 'CustomerController@index');
+            $this->router->get('/create', 'CustomerController@create');
+            $this->router->post('/store', 'CustomerController@store');
+            $this->router->get('/show', 'CustomerController@show');
+            $this->router->get('/edit', 'CustomerController@edit');
+            $this->router->post('/update', 'CustomerController@update');
+        });
+
         // Request Routes
         $this->router->mount('/requests', function () {
             $this->router->get('/', 'RequestController@index');
             $this->router->get('/create', 'RequestController@create');
             $this->router->post('/store', 'RequestController@store');
             $this->router->get('/show', 'RequestController@show');
+            $this->router->post('/update-status', 'RequestController@updateStatus');
+            $this->router->post('/add-stop', 'RequestController@addStop');
+            $this->router->get('/remove-stop', 'RequestController@removeStop');
         });
 
         // API Routes

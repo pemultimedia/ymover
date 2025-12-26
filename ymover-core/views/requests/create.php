@@ -14,9 +14,30 @@
                     <!-- Customer Section -->
                     <h6 class="text-muted mb-3">Cliente</h6>
                     <div class="mb-3">
-                        <label class="form-label">Nome Cliente / Ragione Sociale</label>
-                        <input type="text" name="customer_name" class="form-control" required placeholder="Es. Mario Rossi">
-                        <div class="form-text">Per ora creiamo un nuovo cliente. In futuro potrai selezionarne uno esistente.</div>
+                        <label class="form-label">Seleziona Cliente Esistente</label>
+                        <select name="customer_id" class="form-select mb-2">
+                            <option value="">-- Nuovo Cliente --</option>
+                            <?php foreach ($customers as $c): ?>
+                                <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="text-center text-muted my-2 small">oppure crea nuovo</div>
+                        <input type="text" name="customer_name" class="form-control" placeholder="Nome Nuovo Cliente / Ragione Sociale">
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Logistics Section -->
+                    <h6 class="text-muted mb-3">Logistica (Indirizzi Principali)</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Origine (Carico)</label>
+                            <input type="text" name="origin_address" class="form-control" placeholder="Via, Città">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Destinazione (Scarico)</label>
+                            <input type="text" name="destination_address" class="form-control" placeholder="Via, Città">
+                        </div>
                     </div>
 
                     <hr class="my-4">
