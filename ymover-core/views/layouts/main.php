@@ -12,6 +12,7 @@
 </head>
 <body>
     <div class="d-flex">
+        <?php if (isset($_SESSION['user_id'])): ?>
         <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; min-height: 100vh;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 <span class="fs-4">YMover</span>
@@ -26,6 +27,7 @@
                 </li>
             </ul>
         </div>
+        <?php endif; ?>
         <div class="flex-grow-1 p-4 bg-light">
             <div class="container-fluid">
                 <?= $content ?? '' ?>
