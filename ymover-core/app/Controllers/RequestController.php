@@ -116,14 +116,14 @@ class RequestController
 
     public function show(): void
     {
-        $id = $_GET['id'] ?? null;
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
         if (!$id) {
             header("Location: /requests");
             exit;
         }
 
         // Fetch Request
-        $request = $this->requestModel->findById((int)$id, $_SESSION['tenant_id']);
+        $request = $this->requestModel->findById($id, $_SESSION['tenant_id']);
         
         if (!$request) {
              header("Location: /requests");
@@ -133,12 +133,13 @@ class RequestController
         $customer = $this->customerModel->findById($request['customer_id']);
         
         // Fetch Stops
-        $stops = $this->stopModel->getByRequestId((int)$id);
+        $stops = $this->stopModel->getByRequestId($id);
 
 
         // Fetch Quotes
         $quoteModel = new \App\Models\Quote();
         $quotes = $quoteModel->getByRequestId($id);
+
 
         // Fetch Resources
         $resourceModel = new \App\Models\Resource();
