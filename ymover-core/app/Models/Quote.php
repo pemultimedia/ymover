@@ -41,10 +41,11 @@ class Quote extends BaseModel
 
     public function getByRequestId(int $requestId): array
     {
-        $stmt = $this->db->prepare("SELECT * FROM quotes WHERE request_id = :request_id ORDER BY created_at DESC");
+        $stmt = $this->db->prepare("SELECT * FROM quotes WHERE request_id = :request_id ORDER BY id DESC");
         $stmt->execute(['request_id' => $requestId]);
         return $stmt->fetchAll();
     }
+
 
     public function updateStatus(int $id, string $status): bool
     {
