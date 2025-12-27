@@ -9,17 +9,23 @@ use App\Models\Request;
 use App\Models\Customer;
 use App\Models\InventoryVersion;
 use App\Models\InventoryBlock;
+use App\Models\Stop;
+
 
 class RequestController
 {
     private Request $requestModel;
     private Customer $customerModel;
+    private Stop $stopModel;
+
 
     public function __construct()
     {
         $this->requestModel = new Request();
         $this->customerModel = new Customer();
+        $this->stopModel = new Stop();
     }
+
 
     public function index(): void
     {
@@ -76,15 +82,19 @@ class RequestController
         $requestId = $this->requestModel->create($requestData);
 
         // 3. Create Stops if provided
-        $db = \App\Core\Database::getInstance()->pdo;
         if (!empty($data['origin_address'])) {
-            $stmt = $db->prepare("INSERT INTO stops (request_id, address_full) VALUES (:request_id, :address)");
-            $stmt->execute(['request_id' => $requestId, 'address' => $data['origin_address']]);
+            $this->stopModel->create([
+                'request_id' => $requestId,
+                'address_full' => $data['origin_address']
+            ]);
         }
         if (!empty($data['destination_address'])) {
-            $stmt = $db->prepare("INSERT INTO stops (request_id, address_full) VALUES (:request_id, :address)");
-            $stmt->execute(['request_id' => $requestId, 'address' => $data['destination_address']]);
+            $this->stopModel->create([
+                'request_id' => $requestId,
+                'address_full' => $data['destination_address']
+            ]);
         }
+
         
         // 4. Create Initial Inventory Version & Block
         $versionModel = new InventoryVersion();
@@ -123,9 +133,8 @@ class RequestController
         $customer = $this->customerModel->findById($request['customer_id']);
         
         // Fetch Stops
-        $stmt = $db->prepare("SELECT * FROM stops WHERE request_id = :request_id ORDER BY id ASC");
-        $stmt->execute(['request_id' => $id]);
-        $stops = $stmt->fetchAll();
+        $stops = $this->stopModel->getByRequestId((int)$id);
+
 
         // Fetch Quotes
         $quoteModel = new \App\Models\Quote();
@@ -174,12 +183,7 @@ class RequestController
             exit;
         }
 
-        $db = \App\Core\Database::getInstance()->pdo;
-        $sql = "INSERT INTO stops (request_id, address_full, city, floor, elevator_status, notes) 
-                VALUES (:request_id, :address_full, :city, :floor, :elevator_status, :notes)";
-        
-        $stmt = $db->prepare($sql);
-        $stmt->execute([
+        $this->stopModel->create([
             'request_id' => $requestId,
             'address_full' => $_POST['address_full'],
             'city' => $_POST['city'] ?? null,
@@ -191,6 +195,7 @@ class RequestController
         header("Location: /requests/show?id=" . $requestId);
         exit;
     }
+
 
     public function removeStop(): void
     {
@@ -204,9 +209,10 @@ class RequestController
 
         $db = \App\Core\Database::getInstance()->pdo;
         $stmt = $db->prepare("DELETE FROM stops WHERE id = :id AND request_id = :request_id");
-        $stmt->execute(['id' => $id, 'request_id' => $requestId]);
+        $stmt->execute(['id' => (int)$id, 'request_id' => (int)$requestId]);
 
         header("Location: /requests/show?id=" . $requestId);
         exit;
     }
+
 }
