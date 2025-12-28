@@ -1,33 +1,42 @@
-<div class="mb-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/users">Team</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Modifica Membro</li>
+<div class="mb-6">
+    <nav class="flex mb-4" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+                <a href="/users" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-400 dark:hover:text-white">
+                    Team
+                </a>
+            </li>
+            <li aria-current="page">
+                <div class="flex items-center">
+                    <span class="material-symbols-outlined text-gray-400 text-lg mx-1">chevron_right</span>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Modifica Membro</span>
+                </div>
+            </li>
         </ol>
     </nav>
-    <h1>Modifica Membro: <?= htmlspecialchars($user['name']) ?></h1>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Modifica Membro: <?= htmlspecialchars($user['name']) ?></h1>
 </div>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <form action="/users/update" method="POST">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+        <div class="bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div class="p-6">
+                <form action="/users/update" method="POST" class="space-y-6">
                     <input type="hidden" name="id" value="<?= $user['id'] ?>">
                     
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nome Completo</label>
-                        <input type="text" class="form-control" id="name" name="name" value="<?= htmlspecialchars($user['name']) ?>" required>
+                    <div>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nome Completo</label>
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($user['name']) ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
+                    <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Ruolo</label>
-                        <select class="form-select" id="role" name="role" required>
+                    <div>
+                        <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ruolo</label>
+                        <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary" required>
                             <option value="operative" <?= $user['role'] === 'operative' ? 'selected' : '' ?>>Operativo</option>
                             <option value="driver" <?= $user['role'] === 'driver' ? 'selected' : '' ?>>Autista / Caposquadra</option>
                             <option value="manager" <?= $user['role'] === 'manager' ? 'selected' : '' ?>>Manager</option>
@@ -35,9 +44,9 @@
                         </select>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="/users" class="btn btn-outline-secondary">Annulla</a>
-                        <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <a href="/users" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">Annulla</a>
+                        <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary/90 shadow-sm transition-colors">Salva Modifiche</button>
                     </div>
                 </form>
             </div>
