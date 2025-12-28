@@ -19,8 +19,17 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2">
         <div class="bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden mb-6">
-            <div class="relative h-64 md:h-96">
-                <img src="<?= htmlspecialchars($ad['image_url'] ?: 'https://via.placeholder.com/800x400?text=No+Image') ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($ad['title']) ?>">
+            <div class="relative h-64 md:h-96 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                <span class="material-symbols-outlined text-9xl text-gray-300 dark:text-gray-500">
+                    <?php
+                    switch ($ad['type']) {
+                        case 'vehicle': echo 'local_shipping'; break;
+                        case 'equipment': echo 'handyman'; break;
+                        case 'manpower': echo 'engineering'; break;
+                        default: echo 'inventory_2';
+                    }
+                    ?>
+                </span>
                 <div class="absolute top-4 right-4">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white/90 text-gray-800 shadow-sm backdrop-blur-sm">
                         <?= ucfirst($ad['type']) ?>
@@ -31,16 +40,20 @@
                 <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2"><?= htmlspecialchars($ad['title']) ?></h1>
-                        <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+                        <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-2">
                             <span class="material-symbols-outlined text-lg mr-1">location_on</span>
-                            <?= htmlspecialchars($ad['location']) ?>
+                            <?= htmlspecialchars($ad['city']) ?>
                             <span class="mx-2">•</span>
                             <span>Pubblicato il <?= date('d/m/Y', strtotime($ad['created_at'])) ?></span>
+                        </div>
+                        <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+                            <span class="material-symbols-outlined text-lg mr-1">calendar_month</span>
+                            Disponibile dal <?= date('d/m/Y', strtotime($ad['available_from'])) ?> al <?= date('d/m/Y', strtotime($ad['available_to'])) ?>
                         </div>
                     </div>
                     <div class="text-right">
                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Prezzo Richiesto</p>
-                        <p class="text-2xl font-bold text-primary">€ <?= number_format((float)$ad['price'], 2, ',', '.') ?></p>
+                        <p class="text-2xl font-bold text-primary">€ <?= number_format((float)$ad['price_fixed'], 2, ',', '.') ?></p>
                     </div>
                 </div>
 

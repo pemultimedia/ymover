@@ -50,13 +50,15 @@ class MarketplaceController
     {
         $data = [
             'tenant_id' => $_SESSION['tenant_id'],
-            'user_id' => $_SESSION['user_id'],
             'title' => $_POST['title'] ?? '',
             'description' => $_POST['description'] ?? '',
-            'type' => $_POST['type'] ?? 'other',
-            'price' => (float)($_POST['price'] ?? 0),
-            'location' => $_POST['location'] ?? '',
-            'image_url' => $_POST['image_url'] ?? '' // In a real app, handle file upload
+            'type' => $_POST['type'] ?? 'vehicle',
+            'price_fixed' => (float)($_POST['price'] ?? 0),
+            'city' => $_POST['city'] ?? '',
+            'available_from' => $_POST['available_from'] ?? date('Y-m-d H:i:s'),
+            'available_to' => $_POST['available_to'] ?? date('Y-m-d H:i:s', strtotime('+30 days')),
+            'lat' => 0.0, // Default for now
+            'lng' => 0.0  // Default for now
         ];
 
         $this->adModel->create($data);
@@ -90,10 +92,11 @@ class MarketplaceController
         $data = [
             'title' => $_POST['title'] ?? '',
             'description' => $_POST['description'] ?? '',
-            'type' => $_POST['type'] ?? 'other',
-            'price' => (float)($_POST['price'] ?? 0),
-            'location' => $_POST['location'] ?? '',
-            'image_url' => $_POST['image_url'] ?? $ad['image_url']
+            'type' => $_POST['type'] ?? 'vehicle',
+            'price_fixed' => (float)($_POST['price'] ?? 0),
+            'city' => $_POST['city'] ?? '',
+            'available_from' => $_POST['available_from'] ?? date('Y-m-d H:i:s'),
+            'available_to' => $_POST['available_to'] ?? date('Y-m-d H:i:s', strtotime('+30 days'))
         ];
 
         $this->adModel->update($id, $data);

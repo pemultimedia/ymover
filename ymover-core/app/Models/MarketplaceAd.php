@@ -8,10 +8,14 @@ class MarketplaceAd extends BaseModel
 {
     public function getAll(): array
     {
+        // user_id is not in the table, so we join tenants to get some info if needed, 
+        // or just return listings. For now, we'll just return listings.
+        // If we need user info, we might need to rely on tenant info.
         $stmt = $this->db->query("
-            SELECT m.*, u.name as user_name 
-            FROM marketplace_ads m 
-            LEFT JOIN users u ON m.user_id = u.id 
+            SELECT m.*, t.name as tenant_name 
+            FROM marketplace_listings m 
+            LEFT JOIN tenants t ON m.tenant_id = t.id 
+            WHERE m.is_active = 1
             ORDER BY m.created_at DESC
         ");
         return $stmt->fetchAll();
@@ -20,9 +24,9 @@ class MarketplaceAd extends BaseModel
     public function getById(int $id): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT m.*, u.name as user_name 
-            FROM marketplace_ads m 
-            LEFT JOIN users u ON m.user_id = u.id 
+            SELECT m.*, t.name as tenant_name 
+            FROM marketplace_listings m 
+            LEFT JOIN tenants t ON m.tenant_id = t.id 
             WHERE m.id = :id
         ");
         $stmt->execute(['id' => $id]);
@@ -31,19 +35,21 @@ class MarketplaceAd extends BaseModel
 
     public function create(array $data): int
     {
-        $sql = "INSERT INTO marketplace_ads (tenant_id, user_id, title, description, type, price, location, image_url) 
-                VALUES (:tenant_id, :user_id, :title, :description, :type, :price, :location, :image_url)";
+        $sql = "INSERT INTO marketplace_listings (tenant_id, title, description, type, price_fixed, city, lat, lng, available_from, available_to, is_active) 
+                VALUES (:tenant_id, :title, :description, :type, :price_fixed, :city, :lat, :lng, :available_from, :available_to, 1)";
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             'tenant_id' => $data['tenant_id'],
-            'user_id' => $data['user_id'],
             'title' => $data['title'],
             'description' => $data['description'],
             'type' => $data['type'],
-            'price' => $data['price'],
-            'location' => $data['location'],
-            'image_url' => $data['image_url'] ?? null
+            'price_fixed' => $data['price_fixed'],
+            'city' => $data['city'],
+            'lat' => $data['lat'] ?? 0.0,
+            'lng' => $data['lng'] ?? 0.0,
+            'available_from' => $data['available_from'],
+            'available_to' => $data['available_to']
         ]);
         
         return (int)$this->db->lastInsertId();
@@ -51,13 +57,14 @@ class MarketplaceAd extends BaseModel
 
     public function update(int $id, array $data): bool
     {
-        $sql = "UPDATE marketplace_ads 
+        $sql = "UPDATE marketplace_listings 
                 SET title = :title, 
                     description = :description, 
                     type = :type, 
-                    price = :price, 
-                    location = :location, 
-                    image_url = :image_url 
+                    price_fixed = :price_fixed, 
+                    city = :city,
+                    available_from = :available_from,
+                    available_to = :available_to
                 WHERE id = :id";
         
         $stmt = $this->db->prepare($sql);
@@ -66,15 +73,16 @@ class MarketplaceAd extends BaseModel
             'title' => $data['title'],
             'description' => $data['description'],
             'type' => $data['type'],
-            'price' => $data['price'],
-            'location' => $data['location'],
-            'image_url' => $data['image_url'] ?? null
+            'price_fixed' => $data['price_fixed'],
+            'city' => $data['city'],
+            'available_from' => $data['available_from'],
+            'available_to' => $data['available_to']
         ]);
     }
 
     public function delete(int $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM marketplace_ads WHERE id = :id");
+        $stmt = $this->db->prepare("DELETE FROM marketplace_listings WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }
 }

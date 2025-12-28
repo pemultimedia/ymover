@@ -24,8 +24,17 @@
     <?php if (!empty($ads)): ?>
         <?php foreach ($ads as $ad): ?>
             <div class="bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow">
-                <div class="relative h-48">
-                    <img src="<?= htmlspecialchars($ad['image_url'] ?: 'https://via.placeholder.com/800x400?text=No+Image') ?>" class="w-full h-full object-cover" alt="<?= htmlspecialchars($ad['title']) ?>">
+                <div class="relative h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-500">
+                        <?php
+                        switch ($ad['type']) {
+                            case 'vehicle': echo 'local_shipping'; break;
+                            case 'equipment': echo 'handyman'; break;
+                            case 'manpower': echo 'engineering'; break;
+                            default: echo 'inventory_2';
+                        }
+                        ?>
+                    </span>
                     <div class="absolute top-2 right-2">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/90 text-gray-800 shadow-sm backdrop-blur-sm">
                             <?= ucfirst($ad['type']) ?>
@@ -35,8 +44,9 @@
                 <div class="p-6 flex flex-col flex-grow">
                     <h5 class="text-lg font-bold text-gray-900 dark:text-white mb-2"><?= htmlspecialchars($ad['title']) ?></h5>
                     <div class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex-grow">
-                        <p class="mb-1">Disponibile a: <span class="font-medium text-gray-700 dark:text-gray-300"><?= htmlspecialchars($ad['location']) ?></span></p>
-                        <p>Prezzo: <span class="font-medium text-gray-700 dark:text-gray-300">€ <?= number_format((float)$ad['price'], 2, ',', '.') ?></span></p>
+                        <p class="mb-1">Disponibile a: <span class="font-medium text-gray-700 dark:text-gray-300"><?= htmlspecialchars($ad['city']) ?></span></p>
+                        <p>Prezzo: <span class="font-medium text-gray-700 dark:text-gray-300">€ <?= number_format((float)$ad['price_fixed'], 2, ',', '.') ?></span></p>
+                        <p class="text-xs mt-2">Dal: <?= date('d/m/Y', strtotime($ad['available_from'])) ?> Al: <?= date('d/m/Y', strtotime($ad['available_to'])) ?></p>
                     </div>
                     <a href="/marketplace/show?id=<?= $ad['id'] ?>" class="w-full py-2 px-4 rounded-lg border border-primary text-primary font-bold text-sm hover:bg-primary hover:text-white transition-colors text-center">
                         Dettagli
