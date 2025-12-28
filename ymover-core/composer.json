@@ -11,6 +11,8 @@
         "vlucas/phpdotenv": "^5.6",
         "league/plates": "^3.5",
         "stripe/stripe-php": "^13.0",
+        "phpmailer/phpmailer": "^6.9",
+        "google/apiclient": "^2.15",
         "ext-pdo": "*",
         "ext-json": "*",
         "ext-mbstring": "*"
