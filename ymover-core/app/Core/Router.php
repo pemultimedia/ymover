@@ -61,6 +61,8 @@ class Router
             $this->router->post('/update-status', 'RequestController@updateStatus');
             $this->router->post('/add-stop', 'RequestController@addStop');
             $this->router->get('/remove-stop', 'RequestController@removeStop');
+            $this->router->post('/add-note', 'RequestController@addNote');
+            $this->router->post('/upload-file', 'RequestController@uploadFile');
         });
 
         // Quote Routes

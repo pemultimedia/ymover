@@ -159,10 +159,21 @@ class RequestController
         $resourceModel = new \App\Models\Resource();
         $resources = $resourceModel->getAllByTenant($_SESSION['tenant_id']);
         
-        // Mock Notes (until Note model is ready)
-        $notes = [
-            ['author' => 'Sistema', 'text' => 'Richiesta creata.', 'created_at' => $request['created_at']],
-        ];
+        // Fetch Notes
+        $db = \App\Core\Database::getInstance()->pdo;
+        $stmt = $db->prepare("SELECT * FROM request_notes WHERE request_id = :request_id ORDER BY created_at ASC");
+        $stmt->execute(['request_id' => $id]);
+        $notes = $stmt->fetchAll();
+
+        if (empty($notes) && !empty($request['internal_notes'])) {
+             // Migrate legacy internal note to notes if empty
+             $notes[] = ['author_name' => 'Sistema', 'text' => $request['internal_notes'], 'created_at' => $request['created_at']];
+        }
+
+        // Fetch Files
+        $stmt = $db->prepare("SELECT * FROM attachments WHERE entity_type = 'request' AND entity_id = :entity_id ORDER BY created_at DESC");
+        $stmt->execute(['entity_id' => $id]);
+        $files = $stmt->fetchAll();
 
         View::render('requests/show', [
             'request' => $request,
@@ -170,7 +181,8 @@ class RequestController
             'stops' => $stops,
             'inventoryVersions' => $versions,
             'resources' => $resources,
-            'notes' => $notes
+            'notes' => $notes,
+            'files' => $files
         ]);
     }
 
@@ -256,4 +268,60 @@ class RequestController
         exit;
     }
 
+    public function addNote(): void
+    {
+        $requestId = $_POST['request_id'] ?? null;
+        $text = $_POST['text'] ?? null;
+
+        if (!$requestId || !$text) {
+            http_response_code(400);
+            return;
+        }
+
+        $db = \App\Core\Database::getInstance()->pdo;
+        $stmt = $db->prepare("INSERT INTO request_notes (request_id, user_id, author_name, text) VALUES (:request_id, :user_id, :author_name, :text)");
+        $stmt->execute([
+            'request_id' => $requestId,
+            'user_id' => $_SESSION['user_id'] ?? null,
+            'author_name' => $_SESSION['user_name'] ?? 'Operatore', // Assuming user_name is in session or fetch it
+            'text' => $text
+        ]);
+
+        http_response_code(200);
+    }
+
+    public function uploadFile(): void
+    {
+        $requestId = $_POST['request_id'] ?? null;
+        
+        if (!$requestId || empty($_FILES['file'])) {
+            header("Location: /requests/show?id=" . $requestId);
+            exit;
+        }
+
+        $file = $_FILES['file'];
+        $uploadDir = __DIR__ . '/../../storage/uploads/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $filename = uniqid() . '_' . basename($file['name']);
+        $targetPath = $uploadDir . $filename;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            $db = \App\Core\Database::getInstance()->pdo;
+            $stmt = $db->prepare("INSERT INTO attachments (tenant_id, entity_type, entity_id, filename, file_path, file_size, mime_type) VALUES (:tenant_id, 'request', :entity_id, :filename, :file_path, :file_size, :mime_type)");
+            $stmt->execute([
+                'tenant_id' => $_SESSION['tenant_id'],
+                'entity_id' => $requestId,
+                'filename' => $file['name'],
+                'file_path' => 'uploads/' . $filename,
+                'file_size' => $file['size'],
+                'mime_type' => $file['type']
+            ]);
+        }
+
+        header("Location: /requests/show?id=" . $requestId);
+        exit;
+    }
 }
