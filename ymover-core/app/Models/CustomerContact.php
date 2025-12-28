@@ -4,15 +4,8 @@ namespace App\Models;
 
 use PDO;
 
-class CustomerContact
+class CustomerContact extends BaseModel
 {
-    private PDO $db;
-
-    public function __construct()
-    {
-        $this->db = \App\Core\Database::getInstance();
-    }
-
     public function getByCustomerId(int $customerId): array
     {
         $stmt = $this->db->prepare("SELECT * FROM customer_contacts WHERE customer_id = :customer_id ORDER BY is_primary DESC, id ASC");
