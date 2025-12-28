@@ -98,7 +98,13 @@ class CustomerController
             exit;
         }
 
-        View::render('customers/edit', ['customer' => $customer]);
+        $contactModel = new \App\Models\CustomerContact();
+        $contacts = $contactModel->getByCustomerId((int)$id);
+
+        View::render('customers/edit', [
+            'customer' => $customer,
+            'contacts' => $contacts
+        ]);
     }
 
     public function update(): void
@@ -124,6 +130,29 @@ class CustomerController
             'tax_code' => $data['tax_code'] ?? null,
             'notes' => $data['notes'] ?? null,
         ]);
+
+        // Handle Contacts
+        $contactModel = new \App\Models\CustomerContact();
+        
+        // Simple strategy: Delete all and recreate (or handle updates if IDs are present, but recreation is easier for dynamic forms)
+        // However, to keep IDs stable if needed, we should check. For now, let's go with delete-all-insert for simplicity unless IDs are critical.
+        // Given the prompt implies flexibility, delete-all-insert is robust for "replacing" the state.
+        
+        $contactModel->deleteAllByCustomerId((int)$id);
+
+        if (isset($data['contacts']) && is_array($data['contacts'])) {
+            foreach ($data['contacts'] as $contact) {
+                if (!empty($contact['value'])) {
+                    $contactModel->create([
+                        'customer_id' => $id,
+                        'type' => $contact['type'],
+                        'value' => $contact['value'],
+                        'is_primary' => isset($contact['is_primary']) ? 1 : 0,
+                        'label' => $contact['label'] ?? null,
+                    ]);
+                }
+            }
+        }
 
         header("Location: /customers/show?id=" . $id);
         exit;
