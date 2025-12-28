@@ -97,6 +97,26 @@ class Router
             $this->router->get('/delete', 'ResourceController@delete');
         });
 
+        // Warehouse Routes
+        $this->router->mount('/warehouses', function () {
+            $this->router->get('/', 'WarehouseController@index');
+            $this->router->get('/create', 'WarehouseController@create');
+            $this->router->post('/store', 'WarehouseController@store');
+            $this->router->get('/edit', 'WarehouseController@edit');
+            $this->router->post('/update', 'WarehouseController@update');
+            $this->router->get('/delete', 'WarehouseController@delete');
+        });
+
+        // Storage Routes
+        $this->router->mount('/storage', function () {
+            $this->router->get('/', 'StorageController@index');
+            $this->router->get('/create', 'StorageController@createContract');
+            $this->router->post('/store', 'StorageController@storeContract');
+            $this->router->get('/show', 'StorageController@showContract');
+            $this->router->post('/movement/store', 'StorageController@registerMovement');
+            $this->router->get('/waybill', 'StorageController@generateWaybill');
+        });
+
         // Calendar Routes
         $this->router->mount('/calendar', function () {
             $this->router->get('/', 'CalendarController@index');

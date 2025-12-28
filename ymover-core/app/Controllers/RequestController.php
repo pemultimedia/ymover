@@ -184,10 +184,30 @@ class RequestController
             exit;
         }
 
+        $warehouseId = !empty($_POST['warehouse_id']) ? (int)$_POST['warehouse_id'] : null;
+        $addressFull = $_POST['address_full'] ?? '';
+        $city = $_POST['city'] ?? null;
+        $lat = null;
+        $lng = null;
+
+        if ($warehouseId) {
+            $warehouseModel = new \App\Models\Warehouse();
+            $warehouse = $warehouseModel->getById($warehouseId);
+            if ($warehouse) {
+                $addressFull = $warehouse['address']; // Use warehouse address
+                $city = $warehouse['city'];
+                $lat = $warehouse['lat'];
+                $lng = $warehouse['lng'];
+            }
+        }
+
         $this->stopModel->create([
             'request_id' => $requestId,
-            'address_full' => $_POST['address_full'],
-            'city' => $_POST['city'] ?? null,
+            'warehouse_id' => $warehouseId,
+            'address_full' => $addressFull,
+            'city' => $city,
+            'lat' => $lat,
+            'lng' => $lng,
             'floor' => $_POST['floor'] ?? 0,
             'elevator_status' => $_POST['elevator_status'] ?? 'unknown',
             'notes' => $_POST['notes'] ?? null,
