@@ -1,0 +1,24 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        # Disabilita la negoziazione automatica dei contenuti e il listing delle directory (Sicurezza)
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Gestione Header Authorization (Spesso perso da Apache su Plesk/FPM)
+    # Fondamentale se useremo API con Bearer Token in futuro
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Reindirizza tutto ciò che non è un file reale o una cartella reale a index.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Opzionale: Forza HTTPS (Se non lo fai già dalle impostazioni di Plesk)
+# <IfModule mod_rewrite.c>
+#    RewriteCond %{HTTPS} off
+#    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
