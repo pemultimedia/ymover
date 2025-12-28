@@ -165,6 +165,12 @@ class RequestController
         $stmt->execute(['request_id' => $id]);
         $notes = $stmt->fetchAll();
 
+        foreach ($notes as &$note) {
+            $stmt = $db->prepare("SELECT * FROM attachments WHERE entity_type = 'request_note' AND entity_id = :entity_id");
+            $stmt->execute(['entity_id' => $note['id']]);
+            $note['attachments'] = $stmt->fetchAll();
+        }
+
         if (empty($notes) && !empty($request['internal_notes'])) {
              // Migrate legacy internal note to notes if empty
              $notes[] = ['author_name' => 'Sistema', 'text' => $request['internal_notes'], 'created_at' => $request['created_at']];
@@ -273,7 +279,7 @@ class RequestController
         $requestId = $_POST['request_id'] ?? null;
         $text = $_POST['text'] ?? null;
 
-        if (!$requestId || !$text) {
+        if (!$requestId) {
             http_response_code(400);
             return;
         }
@@ -283,9 +289,39 @@ class RequestController
         $stmt->execute([
             'request_id' => $requestId,
             'user_id' => $_SESSION['user_id'] ?? null,
-            'author_name' => $_SESSION['user_name'] ?? 'Operatore', // Assuming user_name is in session or fetch it
+            'author_name' => $_SESSION['user_name'] ?? 'Operatore',
             'text' => $text
         ]);
+
+        $noteId = $db->lastInsertId();
+
+        // Handle File Uploads for the note
+        if (!empty($_FILES['files'])) {
+            $files = $_FILES['files'];
+            $uploadDir = __DIR__ . '/../../storage/uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            for ($i = 0; $i < count($files['name']); $i++) {
+                if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                    $filename = uniqid() . '_' . basename($files['name'][$i]);
+                    $targetPath = $uploadDir . $filename;
+
+                    if (move_uploaded_file($files['tmp_name'][$i], $targetPath)) {
+                        $stmt = $db->prepare("INSERT INTO attachments (tenant_id, entity_type, entity_id, filename, file_path, file_size, mime_type) VALUES (:tenant_id, 'request_note', :entity_id, :filename, :file_path, :file_size, :mime_type)");
+                        $stmt->execute([
+                            'tenant_id' => $_SESSION['tenant_id'],
+                            'entity_id' => $noteId,
+                            'filename' => $files['name'][$i],
+                            'file_path' => 'uploads/' . $filename,
+                            'file_size' => $files['size'][$i],
+                            'mime_type' => $files['type'][$i]
+                        ]);
+                    }
+                }
+            }
+        }
 
         http_response_code(200);
     }

@@ -35,7 +35,7 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-800 font-sans antialiased h-screen flex flex-col overflow-hidden">
+<body class="bg-gray-50 text-slate-800 font-sans antialiased h-screen flex flex-col overflow-hidden" x-data="requestPage">
 
     <!-- ================= HEADER PRINCIPALE ================= -->
     <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 shrink-0 z-20">
@@ -69,7 +69,7 @@
     </header>
 
     <!-- ================= LAYOUT PRINCIPALE (GRID) ================= -->
-    <main class="flex-1 flex overflow-hidden" x-data="requestPage">
+    <main class="flex-1 flex overflow-hidden">
         
         <!-- COLONNA SINISTRA: OPERATIVITÀ (Scrollabile) -->
         <div class="flex-1 overflow-y-auto p-6 scrollbar-hide">
@@ -424,8 +424,22 @@
                     <!-- Input Nota -->
                     <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
                         <textarea x-ref="noteInput" class="w-full text-sm border-0 focus:ring-0 p-0 resize-none" rows="2" placeholder="Scrivi una nota interna..."></textarea>
+                        
+                        <!-- Preview Allegati Nota -->
+                        <div x-show="selectedNoteFiles.length > 0" class="mt-2 space-y-1">
+                            <template x-for="(file, index) in selectedNoteFiles" :key="index">
+                                <div class="flex items-center justify-between bg-gray-50 px-2 py-1 rounded text-xs border border-gray-100">
+                                    <span class="truncate text-gray-600" x-text="file.name"></span>
+                                    <button @click="removeNoteFile(index)" class="text-gray-400 hover:text-red-500"><span class="material-symbols-rounded text-sm">close</span></button>
+                                </div>
+                            </template>
+                        </div>
+
                         <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                            <button @click="openFileModal()" class="text-gray-400 hover:text-gray-600"><span class="material-symbols-rounded text-lg">attach_file</span></button>
+                            <div class="flex gap-2">
+                                <input type="file" x-ref="noteFiles" @change="handleNoteFilesChange" multiple class="hidden">
+                                <button @click="$refs.noteFiles.click()" class="text-gray-400 hover:text-gray-600" title="Allega file"><span class="material-symbols-rounded text-lg">attach_file</span></button>
+                            </div>
                             <button @click="saveNote()" class="bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded hover:bg-slate-700">Salva</button>
                         </div>
                     </div>
@@ -437,6 +451,18 @@
                                 <div class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-blue-500"></div>
                                 <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm text-sm">
                                     <p class="text-gray-800"><strong><?= htmlspecialchars((string)($note['author_name'] ?? 'Sistema')) ?></strong>: <?= htmlspecialchars((string)($note['text'] ?? '')) ?></p>
+                                    
+                                    <?php if (!empty($note['attachments'])): ?>
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            <?php foreach ($note['attachments'] as $attach): ?>
+                                                <a href="/<?= htmlspecialchars($attach['file_path']) ?>" target="_blank" class="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs text-primary-600 hover:bg-primary-50 transition">
+                                                    <span class="material-symbols-rounded text-sm">description</span>
+                                                    <?= htmlspecialchars($attach['filename']) ?>
+                                                </a>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+
                                     <p class="text-xs text-gray-400 mt-1"><?= date('d/m/Y H:i', strtotime($note['created_at'])) ?></p>
                                 </div>
                             </div>
@@ -444,28 +470,12 @@
                     </div>
                 </div>
 
-                <!-- TAB FILE -->
-                <div x-show="sidebarTab === 'files'" x-cloak class="space-y-2">
-                    <p class="text-sm text-gray-500 text-center py-4">Nessun file allegato.</p>
-                    <button @click="openFileModal()" class="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 text-sm font-medium hover:border-primary-500 hover:text-primary-600 transition">
-                        + Carica File
-                    </button>
                 </div>
 
             </div>
         </aside>
 
     </main>
-
-    </main>
-
-    <!-- ================= MODALS ================= -->
-
-    <!-- Modal Nuovo Blocco -->
-    <div x-show="showBlockModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div x-show="showBlockModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="showBlockModal = false"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div x-show="showBlockModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <form action="/api/inventory/block/create" method="POST">
                     <input type="hidden" name="version_id" :value="currentVersionId">
@@ -575,6 +585,7 @@
                 showFileModal: false,
                 currentVersionId: <?= $currentVersion['id'] ?? 'null' ?>,
                 currentBlockId: null,
+                selectedNoteFiles: [],
 
                 openBlockModal() {
                     this.showBlockModal = true;
@@ -589,16 +600,30 @@
                     this.showFileModal = true;
                 },
 
+                handleNoteFilesChange(event) {
+                    const files = Array.from(event.target.files);
+                    this.selectedNoteFiles = [...this.selectedNoteFiles, ...files];
+                },
+
+                removeNoteFile(index) {
+                    this.selectedNoteFiles.splice(index, 1);
+                },
+
                 saveNote() {
                     const noteText = this.$refs.noteInput.value;
-                    if (!noteText) return;
+                    if (!noteText && this.selectedNoteFiles.length === 0) return;
+
+                    const formData = new FormData();
+                    formData.append('request_id', '<?= $request['id'] ?>');
+                    formData.append('text', noteText);
+                    
+                    this.selectedNoteFiles.forEach((file, i) => {
+                        formData.append('files[]', file);
+                    });
 
                     fetch('/requests/add-note', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `request_id=<?= $request['id'] ?>&text=${encodeURIComponent(noteText)}`
+                        body: formData
                     })
                     .then(response => {
                         if (response.ok) {
