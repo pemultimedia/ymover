@@ -35,7 +35,7 @@ class StorageController
     public function createContract(): void
     {
         $warehouses = $this->warehouseModel->getAll();
-        $customers = $this->customerModel->getAll(); // Assuming getAll exists in Customer model
+        $customers = $this->customerModel->getAllByTenant($_SESSION['tenant_id']);
         View::render('storage/create_contract', [
             'warehouses' => $warehouses,
             'customers' => $customers
