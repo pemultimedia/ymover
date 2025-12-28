@@ -12,7 +12,7 @@ class MarketplaceAd extends BaseModel
         // or just return listings. For now, we'll just return listings.
         // If we need user info, we might need to rely on tenant info.
         $stmt = $this->db->query("
-            SELECT m.*, t.name as tenant_name 
+            SELECT m.*, t.company_name as tenant_name 
             FROM marketplace_listings m 
             LEFT JOIN tenants t ON m.tenant_id = t.id 
             WHERE m.is_active = 1
@@ -24,7 +24,7 @@ class MarketplaceAd extends BaseModel
     public function getById(int $id): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT m.*, t.name as tenant_name 
+            SELECT m.*, t.company_name as tenant_name 
             FROM marketplace_listings m 
             LEFT JOIN tenants t ON m.tenant_id = t.id 
             WHERE m.id = :id
