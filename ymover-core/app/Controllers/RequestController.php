@@ -132,25 +132,45 @@ class RequestController
         
         $customer = $this->customerModel->findById($request['customer_id']);
         
-        // Fetch Stops
+        // Fetch Stops (Ordered)
         $stops = $this->stopModel->getByRequestId($id);
-
-
-        // Fetch Quotes
-        $quoteModel = new \App\Models\Quote();
-        $quotes = $quoteModel->getByRequestId($id);
-
-
+        
+        // Fetch Inventory (Hierarchical)
+        $versionModel = new InventoryVersion();
+        $blockModel = new InventoryBlock();
+        $itemModel = new \App\Models\InventoryItem(); // Assuming this model exists or will be created
+        
+        $versions = $versionModel->getByRequestId($id);
+        foreach ($versions as &$version) {
+            $version['blocks'] = $blockModel->getByVersionId($version['id']);
+            $version['total_volume'] = 0;
+            foreach ($version['blocks'] as &$block) {
+                $block['items'] = $itemModel->getByBlockId($block['id']);
+                $block['volume'] = 0;
+                foreach ($block['items'] as $item) {
+                    $itemVol = ($item['width'] * $item['height'] * $item['depth'] * $item['quantity']) / 1000000; // cm to m3
+                    $block['volume'] += $itemVol;
+                }
+                $version['total_volume'] += $block['volume'];
+            }
+        }
+        
         // Fetch Resources
         $resourceModel = new \App\Models\Resource();
         $resources = $resourceModel->getAllByTenant($_SESSION['tenant_id']);
         
+        // Mock Notes (until Note model is ready)
+        $notes = [
+            ['author' => 'Sistema', 'text' => 'Richiesta creata.', 'created_at' => $request['created_at']],
+        ];
+
         View::render('requests/show', [
             'request' => $request,
             'customer' => $customer,
             'stops' => $stops,
-            'quotes' => $quotes,
-            'resources' => $resources
+            'inventoryVersions' => $versions,
+            'resources' => $resources,
+            'notes' => $notes
         ]);
     }
 
