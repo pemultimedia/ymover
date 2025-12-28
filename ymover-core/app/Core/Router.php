@@ -74,7 +74,15 @@ class Router
         });
 
         // Marketplace Routes
-        $this->router->get('/marketplace', 'MarketplaceController@index');
+        $this->router->mount('/marketplace', function () {
+            $this->router->get('/', 'MarketplaceController@index');
+            $this->router->get('/create', 'MarketplaceController@create');
+            $this->router->post('/store', 'MarketplaceController@store');
+            $this->router->get('/show', 'MarketplaceController@show');
+            $this->router->get('/edit', 'MarketplaceController@edit');
+            $this->router->post('/update', 'MarketplaceController@update');
+            $this->router->get('/delete', 'MarketplaceController@delete');
+        });
 
         // Email/Communications Routes
         $this->router->get('/communications', 'EmailController@index');
@@ -123,7 +131,7 @@ class Router
         // 404
         $this->router->set404(function () {
             header('HTTP/1.1 404 Not Found');
-            echo '404 - Page not found';
+            \App\Core\View::render('errors/404');
         });
     }
 
