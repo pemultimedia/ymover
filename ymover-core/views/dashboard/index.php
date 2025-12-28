@@ -1,102 +1,71 @@
-<div class="row mb-4">
-    <div class="col-md-12">
-        <h2 class="fw-bold">Dashboard Analitica</h2>
-        <p class="text-muted">Panoramica delle performance per il tuo tenant.</p>
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <div class="flex min-w-72 flex-col gap-1">
+        <p class="text-gray-900 dark:text-white text-3xl font-bold leading-tight tracking-tight">Dashboard Analitica</p>
+        <p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Bentornato, ecco una panoramica delle performance per il tuo tenant.</p>
     </div>
+    <a href="/requests/create" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white gap-2 text-sm font-bold leading-normal tracking-wide shadow-sm hover:opacity-90">
+        <span class="material-symbols-outlined text-lg"> add </span>
+        <span class="truncate">Aggiungi Richiesta</span>
+    </a>
 </div>
 
 <!-- KPI Cards -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 bg-primary text-white">
-            <div class="card-body">
-                <h6 class="text-uppercase small">Fatturato Accettato</h6>
-                <h2 class="fw-bold mb-0">€ <?= number_format((float)$revenue, 2, ',', '.') ?></h2>
-            </div>
-        </div>
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div class="flex flex-col gap-2 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Fatturato Accettato</p>
+        <p class="text-gray-900 dark:text-white text-2xl font-bold">€ <?= number_format((float)$revenue, 2, ',', '.') ?></p>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 bg-success text-white">
-            <div class="card-body">
-                <h6 class="text-uppercase small">Totale Richieste</h6>
-                <h2 class="fw-bold mb-0"><?= array_sum(array_column($requestStats, 'count')) ?></h2>
-            </div>
-        </div>
+    <div class="flex flex-col gap-2 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Totale Richieste</p>
+        <p class="text-gray-900 dark:text-white text-2xl font-bold"><?= array_sum(array_column($requestStats, 'count')) ?></p>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 bg-info text-white">
-            <div class="card-body">
-                <h6 class="text-uppercase small">Tasso Conversione</h6>
-                <?php 
-                    $total = array_sum(array_column($requestStats, 'count'));
-                    $confirmed = 0;
-                    foreach($requestStats as $s) if($s['status'] === 'confirmed' || $s['status'] === 'completed') $confirmed += $s['count'];
-                    $rate = $total > 0 ? ($confirmed / $total) * 100 : 0;
-                ?>
-                <h2 class="fw-bold mb-0"><?= number_format($rate, 1) ?>%</h2>
-            </div>
-        </div>
+    <div class="flex flex-col gap-2 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Tasso Conversione</p>
+        <?php 
+            $total = array_sum(array_column($requestStats, 'count'));
+            $confirmed = 0;
+            foreach($requestStats as $s) if($s['status'] === 'confirmed' || $s['status'] === 'completed') $confirmed += $s['count'];
+            $rate = $total > 0 ? ($confirmed / $total) * 100 : 0;
+        ?>
+        <p class="text-gray-900 dark:text-white text-2xl font-bold"><?= number_format($rate, 1) ?>%</p>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 bg-warning text-dark">
-            <div class="card-body">
-                <h6 class="text-uppercase small">Nuove (Last 30d)</h6>
-                <h2 class="fw-bold mb-0"><?= end($trend)['count'] ?? 0 ?></h2>
-            </div>
-        </div>
+    <div class="flex flex-col gap-2 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Nuove (Last 30d)</p>
+        <p class="text-gray-900 dark:text-white text-2xl font-bold"><?= end($trend)['count'] ?? 0 ?></p>
     </div>
 </div>
 
-<div class="row">
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-8">
     <!-- Chart: Monthly Trend -->
-    <div class="col-md-8 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header bg-white fw-bold">Trend Richieste (Ultimi 6 Mesi)</div>
-            <div class="card-body">
-                <canvas id="trendChart"></canvas>
-            </div>
+    <div class="lg:col-span-2 flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+        <h3 class="text-gray-900 dark:text-white text-lg font-bold">Trend Richieste (Ultimi 6 Mesi)</h3>
+        <div class="h-[300px]">
+            <canvas id="trendChart"></canvas>
         </div>
     </div>
     
     <!-- Chart: Status Distribution -->
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header bg-white fw-bold">Stato Richieste</div>
-            <div class="card-body">
-                <canvas id="statusChart"></canvas>
-            </div>
+    <div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border border-gray-200 dark:border-gray-700/50">
+        <h3 class="text-gray-900 dark:text-white text-lg font-bold">Stato Richieste</h3>
+        <div class="h-[300px]">
+            <canvas id="statusChart"></canvas>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm h-100 border-primary border-start border-4">
-            <div class="card-body">
-                <h5 class="card-title text-primary">Nuova Richiesta</h5>
-                <p class="card-text">Inserisci una nuova richiesta di preventivo.</p>
-                <a href="/requests/create" class="btn btn-primary stretched-link">Crea Richiesta</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm h-100 border-success border-start border-4">
-            <div class="card-body">
-                <h5 class="card-title text-success">Calendario</h5>
-                <p class="card-text">Gestisci la pianificazione operativa.</p>
-                <a href="/calendar" class="btn btn-outline-success stretched-link">Vai al Calendario</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-4">
-        <div class="card shadow-sm h-100 border-info border-start border-4">
-            <div class="card-body">
-                <h5 class="card-title text-info">Risorse</h5>
-                <p class="card-text">Gestisci veicoli e personale.</p>
-                <a href="/resources" class="btn btn-outline-info stretched-link">Gestione Risorse</a>
-            </div>
-        </div>
-    </div>
+<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <a href="/requests/create" class="flex flex-col gap-2 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border-l-4 border-primary hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+        <h5 class="text-primary font-bold">Nuova Richiesta</h5>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Inserisci una nuova richiesta di preventivo.</p>
+    </a>
+    <a href="/calendar" class="flex flex-col gap-2 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border-l-4 border-green-500 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+        <h5 class="text-green-600 font-bold">Calendario</h5>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Gestisci la pianificazione operativa.</p>
+    </a>
+    <a href="/resources" class="flex flex-col gap-2 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm border-l-4 border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+        <h5 class="text-blue-400 font-bold">Risorse</h5>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Gestisci veicoli e personale.</p>
+    </a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -111,13 +80,34 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Richieste',
                 data: <?= json_encode(array_column($trend, 'count')) ?>,
-                borderColor: '#0d6efd',
-                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                borderColor: '#2b8cee',
+                backgroundColor: 'rgba(43, 140, 238, 0.1)',
                 fill: true,
                 tension: 0.4
             }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(156, 163, 175, 0.1)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
     });
 
     // Status Chart
@@ -128,14 +118,24 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: <?= json_encode(array_column($requestStats, 'status')) ?>,
             datasets: [{
                 data: <?= json_encode(array_column($requestStats, 'count')) ?>,
-                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6c757d', '#0dcaf0', '#212529']
+                backgroundColor: ['#2b8cee', '#10b981', '#f59e0b', '#ef4444', '#6b7280', '#06b6d4', '#111827'],
+                borderWidth: 0
             }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            },
+            cutout: '70%'
+        }
     });
 });
 </script>
-
-<style>
-canvas { max-height: 300px; }
-</style>
