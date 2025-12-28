@@ -6,7 +6,7 @@ namespace App\Core;
 
 class View
 {
-    public static function render(string $view, array $data = []): void
+    public static function render(string $view, array $data = [], bool $withLayout = true): void
     {
         extract($data);
         $viewPath = __DIR__ . '/../../views/' . str_replace('.', '/', $view) . '.php';
@@ -15,10 +15,14 @@ class View
             throw new \RuntimeException("View not found: $view");
         }
         
-        ob_start();
-        require $viewPath;
-        $content = ob_get_clean();
-        
-        require __DIR__ . '/../../views/layouts/main.php';
+        if ($withLayout) {
+            ob_start();
+            require $viewPath;
+            $content = ob_get_clean();
+            
+            require __DIR__ . '/../../views/layouts/main.php';
+        } else {
+            require $viewPath;
+        }
     }
 }

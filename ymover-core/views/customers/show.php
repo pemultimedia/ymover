@@ -46,6 +46,47 @@
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Note</p>
                     <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line"><?= htmlspecialchars($customer['notes'] ?? 'Nessuna nota.') ?></p>
                 </div>
+
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Contatti</p>
+                    <div class="space-y-3">
+                        <?php if (empty($contacts)): ?>
+                            <p class="text-sm text-gray-500">Nessun contatto inserito.</p>
+                        <?php else: ?>
+                            <?php foreach ($contacts as $contact): ?>
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-0.5">
+                                        <?php
+                                            $icon = match($contact['type']) {
+                                                'email' => 'mail',
+                                                'phone', 'mobile' => 'call',
+                                                'whatsapp' => 'chat',
+                                                'residence_address', 'billing_address' => 'location_on',
+                                                'tax_code', 'vat_number', 'sdi_code' => 'badge',
+                                                default => 'info'
+                                            };
+                                        ?>
+                                        <span class="material-symbols-outlined text-gray-400 text-lg"><?= $icon ?></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                                <?= htmlspecialchars($contact['value']) ?>
+                                            </p>
+                                            <?php if ($contact['is_primary']): ?>
+                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary-100 text-primary-700 uppercase">Principale</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            <?= ucfirst(str_replace('_', ' ', $contact['type'])) ?>
+                                            <?= !empty($contact['label']) ? ' • ' . htmlspecialchars($contact['label']) : '' ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

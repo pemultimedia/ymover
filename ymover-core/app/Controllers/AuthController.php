@@ -32,7 +32,7 @@ class AuthController
         // For simplicity, let's render 'auth/login' and handle layout inside it or modify View.php later if needed.
         // Actually, let's just use the main layout for now, it's fine.
         
-        View::render('auth/login');
+        View::render('auth/login', [], false);
     }
 
     public function login(): void

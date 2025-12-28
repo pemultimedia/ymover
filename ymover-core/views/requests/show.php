@@ -69,7 +69,7 @@
     </header>
 
     <!-- ================= LAYOUT PRINCIPALE (GRID) ================= -->
-    <main class="flex-1 flex overflow-hidden" x-data="{ activeTab: 'inventory', sidebarTab: 'notes' }">
+    <main class="flex-1 flex overflow-hidden" x-data="requestPage">
         
         <!-- COLONNA SINISTRA: OPERATIVITÀ (Scrollabile) -->
         <div class="flex-1 overflow-y-auto p-6 scrollbar-hide">
@@ -189,10 +189,10 @@
                             <button class="text-gray-400 hover:text-primary-600" title="Clona Versione"><span class="material-symbols-rounded">content_copy</span></button>
                         </div>
                         <div class="flex gap-2">
-                            <button class="btn-secondary px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-1">
+                            <button @click="openBlockModal()" class="btn-secondary px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-1">
                                 <span class="material-symbols-rounded text-base">add_box</span> Nuovo Blocco
                             </button>
-                            <button class="btn-primary px-3 py-1.5 text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center gap-1">
+                            <button @click="openItemModal(null)" class="btn-primary px-3 py-1.5 text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center gap-1">
                                 <span class="material-symbols-rounded text-base">add</span> Aggiungi Elementi
                             </button>
                         </div>
@@ -211,7 +211,12 @@
                                         <span class="material-symbols-rounded text-gray-400 transform transition-transform" :class="open ? 'rotate-180' : ''">expand_more</span>
                                         <h4 class="font-bold text-slate-800"><?= htmlspecialchars($block['name']) ?></h4>
                                     </div>
-                                    <div class="text-sm font-medium text-gray-600"><?= number_format($block['volume'], 2) ?> m³</div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-sm font-medium text-gray-600"><?= number_format($block['volume'], 2) ?> m³</div>
+                                        <button @click.stop="openItemModal(<?= $block['id'] ?>)" class="text-primary-600 hover:text-primary-700 p-1" title="Aggiungi Elemento a questo blocco">
+                                            <span class="material-symbols-rounded">add_circle</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 
                                 <div x-show="open" class="divide-y divide-gray-100">
@@ -418,10 +423,10 @@
                 <div x-show="sidebarTab === 'notes'" class="space-y-4">
                     <!-- Input Nota -->
                     <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
-                        <textarea class="w-full text-sm border-0 focus:ring-0 p-0 resize-none" rows="2" placeholder="Scrivi una nota interna..."></textarea>
+                        <textarea x-ref="noteInput" class="w-full text-sm border-0 focus:ring-0 p-0 resize-none" rows="2" placeholder="Scrivi una nota interna..."></textarea>
                         <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                            <button class="text-gray-400 hover:text-gray-600"><span class="material-symbols-rounded text-lg">attach_file</span></button>
-                            <button class="bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded hover:bg-slate-700">Salva</button>
+                            <button @click="openFileModal()" class="text-gray-400 hover:text-gray-600"><span class="material-symbols-rounded text-lg">attach_file</span></button>
+                            <button @click="saveNote()" class="bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded hover:bg-slate-700">Salva</button>
                         </div>
                     </div>
 
@@ -431,7 +436,7 @@
                             <div class="relative pl-4">
                                 <div class="absolute -left-[5px] top-1 h-2.5 w-2.5 rounded-full bg-blue-500"></div>
                                 <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm text-sm">
-                                    <p class="text-gray-800"><strong><?= htmlspecialchars($note['author']) ?></strong>: <?= htmlspecialchars($note['text']) ?></p>
+                                    <p class="text-gray-800"><strong><?= htmlspecialchars((string)($note['author_name'] ?? 'Sistema')) ?></strong>: <?= htmlspecialchars((string)($note['text'] ?? '')) ?></p>
                                     <p class="text-xs text-gray-400 mt-1"><?= date('d/m/Y H:i', strtotime($note['created_at'])) ?></p>
                                 </div>
                             </div>
@@ -442,7 +447,7 @@
                 <!-- TAB FILE -->
                 <div x-show="sidebarTab === 'files'" x-cloak class="space-y-2">
                     <p class="text-sm text-gray-500 text-center py-4">Nessun file allegato.</p>
-                    <button class="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 text-sm font-medium hover:border-primary-500 hover:text-primary-600 transition">
+                    <button @click="openFileModal()" class="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 text-sm font-medium hover:border-primary-500 hover:text-primary-600 transition">
                         + Carica File
                     </button>
                 </div>

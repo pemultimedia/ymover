@@ -77,9 +77,14 @@ class CustomerController
         $stmt->execute(['customer_id' => $id]);
         $requests = $stmt->fetchAll();
 
+        // Fetch contacts
+        $contactModel = new \App\Models\CustomerContact();
+        $contacts = $contactModel->getByCustomerId((int)$id);
+
         View::render('customers/show', [
             'customer' => $customer,
-            'requests' => $requests
+            'requests' => $requests,
+            'contacts' => $contacts
         ]);
     }
 
