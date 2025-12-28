@@ -10,7 +10,7 @@ use App\Models\StorageMovement;
 use App\Models\Warehouse;
 use App\Models\Customer;
 
-class StorageController extends BaseController
+class StorageController
 {
     private StorageContract $contractModel;
     private StorageMovement $movementModel;
@@ -19,8 +19,6 @@ class StorageController extends BaseController
 
     public function __construct()
     {
-        parent::__construct();
-        $this->requireLogin();
         $this->contractModel = new StorageContract();
         $this->movementModel = new StorageMovement();
         $this->warehouseModel = new Warehouse();

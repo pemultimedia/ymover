@@ -7,14 +7,12 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Models\Warehouse;
 
-class WarehouseController extends BaseController
+class WarehouseController
 {
     private Warehouse $warehouseModel;
 
     public function __construct()
     {
-        parent::__construct();
-        $this->requireLogin();
         $this->warehouseModel = new Warehouse();
     }
 
